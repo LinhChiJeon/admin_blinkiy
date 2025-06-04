@@ -1,3 +1,14 @@
+// build.gradle.kts (dùng Kotlin DSL)
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.google.gms:google-services:4.3.15") // hoặc version mới nhất
+    }
+}
+
 allprojects {
     repositories {
         google()
