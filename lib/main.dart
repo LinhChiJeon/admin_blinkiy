@@ -1,33 +1,43 @@
 import 'package:flutter/material.dart';
-import 'app.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart';
+
+import 'app.dart';
+import 'package:admin_blinkiy/routes/app_routes.dart';
+import 'package:admin_blinkiy/routes/routes.dart';
+import 'package:admin_blinkiy/utils/theme/theme.dart';
 
 /// Entry point of Flutter App
 Future<void> main() async {
   // Ensure that widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize GetX Local Storage
-
-  // Remove # sign from url
-
-  // Initialize Firebase & Authentication Repository
-
-  await Firebase.initializeApp(); // Khởi tạo Firebase
+  // Initialize Firebase
+  await Firebase.initializeApp();
 
   // Main App Starts here...
   runApp(const App());
 }
 
+// If you use a separate App() widget to wrap GetMaterialApp, keep as is.
+// Otherwise, you can use MyApp directly in runApp.
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Admin Blinky',
-      home: Scaffold(
-        appBar: AppBar(title: Text("Blinkiy Admin")),
-        body: Center(child: Text("Firebase đã kết nối thành công!")),
+      themeMode: ThemeMode.light,
+      theme: TAppTheme.lightTheme,
+      darkTheme: TAppTheme.darkTheme,
+      getPages: TAppRoute.pages, // Define your GetX pages here
+      initialRoute: Routes.login, // Set the initial route
+      unknownRoute: GetPage(
+        name: '/page-not-found',
+        page: () => const Scaffold(
+          body: Center(child: Text("404 - Page Not Found")),
+        ),
       ),
     );
   }
