@@ -1,7 +1,7 @@
-import 'package:admin_blinkiy/features/authentication/screens/admin/screens/products/products_screen.dart';
 import 'package:admin_blinkiy/features/authentication/screens/admin/widgets/admin/admin_drawer.dart';
 import 'package:flutter/material.dart';
 import '../../../../utils/constants/colors.dart';
+import '../../../shop/screens/product/all_products/products.dart';
 import '../login/login.dart';
 import 'categories_screen.dart';
 import 'dashboard_screen.dart';
@@ -21,7 +21,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   final List<Widget> _screens = [
     DashboardScreen(),
     CategoriesScreen(),
-    ProductScreen(),
+    ProductsScreen(),
     Placeholder(child: Center(child: Text('Customers'))),
     Placeholder(child: Center(child: Text('Orders'))),
   ];
