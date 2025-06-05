@@ -83,13 +83,14 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
 
-                onPressed: () {
-                  // TODO: Thêm xác thực đăng nhập ở đây nếu cần
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const DashboardScreen()),
-                  );
-                },
+                // onPressed: () {
+                //   // TODO: Thêm xác thực đăng nhập ở đây nếu cần
+                //   Navigator.pushReplacement(
+                //     context,
+                //     MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                //   );
+                // },
+                onPressed: () => controller.emailAndPasswordSignIn(),
 
                
                 child: const Text(TTexts.signIn),
