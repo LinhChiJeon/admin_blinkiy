@@ -1,5 +1,4 @@
 
-import 'package:admin_blinkiy/features/authentication/screens/admin/dashboard_screen.dart';
 import 'package:admin_blinkiy/features/authentication/screens/login/responsive_screens/login_mobile.dart';
 
 import 'package:admin_blinkiy/features/authentication/screens/login/login.dart';

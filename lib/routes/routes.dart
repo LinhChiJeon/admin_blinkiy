@@ -4,7 +4,6 @@ class Routes {
   static const resetPassword = '/reset-password';
   static const dashboard = '/dashboard';
 
-  static const dashboard = '/dashboard';
 
   // Categories
   static const categories = '/categories';

@@ -1,0 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+
+import '../../../../features/shop/models/category_model.dart';
+import '../../../../utils/exceptions/firebase_auth_exceptions.dart';
+import '../../../../utils/exceptions/format_exceptions.dart';
+import '../../../../utils/exceptions/platform_exceptions.dart';
+
+class CategoryRepository extends GetxController {
+  static CategoryRepository get instance => Get.find();
+
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  //firebase firestore instance
+  Future<List<CategoryModel>> getAllCategories() async {
+    try {
+      final snapshot = await _db.collection("Categories").get();
+      final result = snapshot.docs.map((doc) => CategoryModel.fromSnapshot(doc)).toList();
+      return result;
+
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    }
+    catch (e){
+      throw 'Something went wrong. Please try again';
+    }
+  }
+}
