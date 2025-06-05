@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../models/category_model.dart';
 import '../widgets/category_table_header.dart';
 import '../table/category_table.dart';
 

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../product_model.dart';
+import '../../../../models/product_model.dart';
 import '../table/product_table.dart';
 import '../table/product_table_source.dart';
 import '../widgets/add_product_button.dart';
 import '../widgets/product_search_feild.dart';
-
 
 class ProductScreenMobile extends StatefulWidget {
   const ProductScreenMobile({super.key});
@@ -22,9 +21,10 @@ class _ProductScreenMobileState extends State<ProductScreenMobile> {
       searchText = value;
       products = mockProducts
           .where((e) =>
-      e.name.toLowerCase().contains(value.toLowerCase()) ||
-          e.brandName.toLowerCase().contains(value.toLowerCase()) ||
-          e.id.toLowerCase().contains(value.toLowerCase()))
+      e.title.toLowerCase().contains(value.toLowerCase()) ||
+          e.id.toLowerCase().contains(value.toLowerCase()) ||
+          (e.description.toLowerCase().contains(value.toLowerCase()))
+      )
           .toList();
     });
   }
