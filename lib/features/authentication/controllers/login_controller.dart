@@ -1,5 +1,5 @@
-import 'package:admin_blinkiy/lib/data/repositories/authentication/authentication_repository.dart';
-import 'package:admin_blinkiy/lib/features/authentication/controllers/user_controller.dart';
+
+import 'package:admin_blinkiy/features/authentication/controllers/user_controller.dart';
 import 'package:admin_blinkiy/utils/local_storage/storage_utility.dart';
 import 'package:admin_blinkiy/utils/popups/full_screen_loader.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +11,7 @@ import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/constants/text_strings.dart';
 import '../../../../utils/helpers/network_manager.dart';
 import '../../../../utils/popups/loaders.dart';
+import '../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../data/repositories/user/user_repository.dart';
 import '../../personalization/models/user_model.dart';
 
@@ -35,7 +36,7 @@ class LoginController extends GetxController {
   /// handle email and password sign in process
   Future<void> emailAndPasswordSignIn() async {
     try{
-      TFullScreenLoader.openLoadingDialog('Registeing admin account', TImages.docerAnimation);
+      TFullScreenLoader.openLoadingDialog('Registeing admin account', TImages.uploadingCompletedAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if(!isConnected){
@@ -80,7 +81,7 @@ class LoginController extends GetxController {
   /// handles registration of admin user
   Future<void> registerAdmin() async {
     try{
-      TFullScreenLoader.openLoadingDialog('Registeing admin account', TImages.docerAnimation);
+      TFullScreenLoader.openLoadingDialog('Registeing admin account', TImages.uploadingCompletedAnimation);
 
       final isConnected = await NetworkManager.instance.isConnected();
       if(!isConnected){

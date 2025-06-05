@@ -3,7 +3,7 @@ import 'package:admin_blinkiy/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'lib/bindings/general_bindings.dart';
+import 'bindings/general_bindings.dart';
 import 'utils/constants/text_strings.dart';
 import 'utils/theme/theme.dart';
 

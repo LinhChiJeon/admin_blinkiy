@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../../../features/authentication/screens/admin/admin_home_screen.dart';
 import '../../../../routes/routes.dart';
 import '../../../../utils/exceptions/firebase_auth_exceptions.dart';
 import '../../../../utils/exceptions/firebase_exceptions.dart';
@@ -27,7 +28,8 @@ class AuthenticationRepository extends GetxController {
   void screenRedirect() async{
     final user = _auth.currentUser;
     if(user != null){
-      Get.offAllNamed(Routes.dashboard);
+      // Get.offAllNamed(Routes.dashboard);
+      Get.to(() => const AdminHomeScreen());
     }
     else{
       Get.offAllNamed(Routes.login);

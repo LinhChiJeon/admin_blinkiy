@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../../../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../../../utils/constants/colors.dart';
 import '../../../login/login.dart';
 
@@ -15,6 +19,7 @@ class AdminDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AuthenticationRepository());
     // Danh sách các menu
     final menus = [
       {'icon': Icons.dashboard, 'label': 'Dashboard'},
@@ -52,13 +57,15 @@ class AdminDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Log out'),
-            onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-                    (route) => false, // Xóa hết các route trước đó, không quay lại được admin
-              );
-            },
+
+            // onTap: () {
+            //   Navigator.pushAndRemoveUntil(
+            //     context,
+            //     MaterialPageRoute(builder: (_) => const LoginScreen()),
+            //         (route) => false,
+            //   );
+            // },
+            onTap: () => controller.logout(),
           ),
         ],
       ),

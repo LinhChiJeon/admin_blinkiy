@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../../../utils/constants/colors.dart';
+import '../../../shop/controllers/category/category_controller.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -54,6 +57,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CategoryController());
+
     final filteredCategories = categories
         .where((cat) =>
         cat["name"].toString().toLowerCase().contains(search.toLowerCase()))

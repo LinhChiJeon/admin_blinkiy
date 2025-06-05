@@ -3,13 +3,15 @@ import 'package:admin_blinkiy/routes/routes.dart';
 import 'package:admin_blinkiy/utils/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import 'app.dart';
 
+import 'data/repositories/authentication/authentication_repository.dart';
 import 'firebase_options.dart';
-import 'lib/data/repositories/authentication/authentication_repository.dart';
 
 /// Entry point of Flutter App
 Future<void> main() async {

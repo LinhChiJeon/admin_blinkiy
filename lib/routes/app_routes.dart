@@ -21,10 +21,10 @@ class appRoute {
       name: Routes.categories,
       page: () => const CategoriesScreen(),
     ),
-    // GetPage(
-    //   name: Routes.createCategory,
-    //   page: () => const CreateCategoryScreen(),
-    // ),
+    GetPage(
+      name: Routes.createCategory,
+      page: () => const CreateCategoryScreen(),
+    ),
     // GetPage(
     //   name: Routes.editCategory,
     //   page: () => const EditCategoryScreen(),
