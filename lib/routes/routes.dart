@@ -4,12 +4,12 @@ class Routes {
   static const resetPassword = '/reset-password';
   static const dashboard = '/dashboard';
 
-  static const dashboard = '/dashboard';
-
   // Categories
   static const categories = '/categories';
   static const createCategory = '/categories/create';
   static const editCategory = '/categories/edit'; // Có thể thêm tham số sau này
+  static const customers = '/customers'; // Có thể thêm tham số sau này
+  
 
   static List sidebarMenuItems = [
     // Thêm các màn bạn muốn hiển thị trong sidebar
