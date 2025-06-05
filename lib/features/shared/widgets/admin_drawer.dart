@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../utils/constants/colors.dart';
-import '../../../login/login.dart';
+import '../../../utils/constants/colors.dart';
+import '../../authentication/screens/login/login.dart';
 
 class AdminDrawer extends StatelessWidget {
   final int selectedIndex;
