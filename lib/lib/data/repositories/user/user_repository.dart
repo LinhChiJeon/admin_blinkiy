@@ -44,4 +44,13 @@ class UserRepository extends GetxController {
     }
   }
 
+  Future<List<UserModel>> fetchAllUsers() async {
+    try {
+      final snapshot = await _db.collection('Users').get();
+      return snapshot.docs.map((doc) => UserModel.fromSnapshot(doc)).toList();
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
 }

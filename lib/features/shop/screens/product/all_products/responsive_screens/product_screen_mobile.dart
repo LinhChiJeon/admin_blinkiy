@@ -1,36 +1,20 @@
+
 import 'package:flutter/material.dart';
-import '../../../../models/product_model.dart';
+import 'package:get/get.dart';
+import '../../../../controllers/product/product_controller.dart';
 import '../table/product_table.dart';
-import '../table/product_table_source.dart';
 import '../widgets/add_product_button.dart';
 import '../widgets/product_search_feild.dart';
 
-class ProductScreenMobile extends StatefulWidget {
+class ProductScreenMobile extends StatelessWidget {
   const ProductScreenMobile({super.key});
 
   @override
-  State<ProductScreenMobile> createState() => _ProductScreenMobileState();
-}
-
-class _ProductScreenMobileState extends State<ProductScreenMobile> {
-  List<Product> products = mockProducts;
-  String searchText = "";
-
-  void _onSearch(String value) {
-    setState(() {
-      searchText = value;
-      products = mockProducts
-          .where((e) =>
-      e.title.toLowerCase().contains(value.toLowerCase()) ||
-          e.id.toLowerCase().contains(value.toLowerCase()) ||
-          (e.description.toLowerCase().contains(value.toLowerCase()))
-      )
-          .toList();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    Get.put(ProductController());
+
+    final controller = ProductController.to;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
@@ -46,16 +30,24 @@ class _ProductScreenMobileState extends State<ProductScreenMobile> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            ProductSearchField(onChanged: _onSearch),
+            ProductSearchField(
+              onChanged: (value) {
+                controller.filteredItems.value = controller.allItems
+                    .where((e) =>
+                e.title.toLowerCase().contains(value.toLowerCase()) ||
+                    e.id.toLowerCase().contains(value.toLowerCase()) ||
+                    (e.description?.toLowerCase().contains(value.toLowerCase()) ?? false))
+                    .toList();
+              },
+            ),
             const SizedBox(height: 10),
             Expanded(
               child: ProductTable(
-                products: products,
                 onEdit: (index) {
-                  // TODO: Navigate to edit product screen
+                  // TODO: Edit product
                 },
                 onDelete: (index) {
-                  // TODO: Xoá sản phẩm
+                  // TODO: Delete product
                 },
               ),
             ),
