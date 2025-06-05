@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:admin_blinkiy/utils/constants/sizes.dart';
 import 'package:admin_blinkiy/utils/constants/text_strings.dart';
 import 'package:admin_blinkiy/utils/constants/icon_constants.dart';
+import 'package:admin_blinkiy/lib/features/authentication/screens/admin/admin_home_screen.dart';
+
+import '../../admin/admin_home_screen.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
@@ -66,7 +69,11 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle sign in action
+                  // TODO: Thêm xác thực đăng nhập ở đây nếu cần
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AdminHomeScreen()),
+                  );
                 },
                 child: const Text(TTexts.signIn),
               ),

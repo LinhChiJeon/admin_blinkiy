@@ -1,0 +1,67 @@
+import 'package:flutter/material.dart';
+
+import '../../../../../../utils/constants/colors.dart';
+import '../../../login/login.dart';
+
+class AdminDrawer extends StatelessWidget {
+  final int selectedIndex;
+  final Function(int) onSelect;
+
+  const AdminDrawer({
+    Key? key,
+    required this.selectedIndex,
+    required this.onSelect,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Danh sách các menu
+    final menus = [
+      {'icon': Icons.dashboard, 'label': 'Dashboard'},
+      {'icon': Icons.category, 'label': 'Categories'},
+      {'icon': Icons.shopping_bag, 'label': 'Products'},
+      {'icon': Icons.people, 'label': 'Customers'},
+      {'icon': Icons.shopping_cart, 'label': 'Orders'},
+    ];
+
+    return Drawer(
+      child: Column(
+        children: [
+          DrawerHeader(
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: TColors.primary,
+                  child: Text('B', style: TextStyle(color: Colors.white)),
+                ),
+                SizedBox(width: 12),
+                Text('Blinkiy', style: TextStyle(color: TColors.primary, fontSize: 18, fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+          ...List.generate(menus.length, (idx) {
+            return ListTile(
+              leading: Icon(menus[idx]['icon'] as IconData, color: selectedIndex == idx ? TColors.primary : null),
+              title: Text(menus[idx]['label'] as String),
+              selected: selectedIndex == idx,
+              selectedTileColor: TColors.hover,
+              onTap: () => onSelect(idx),
+            );
+          }),
+          const Spacer(),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Log out'),
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    (route) => false, // Xóa hết các route trước đó, không quay lại được admin
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
