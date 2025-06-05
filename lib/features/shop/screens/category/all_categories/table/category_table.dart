@@ -1,7 +1,9 @@
 // lib/features/shop/screens/category/all_categories/table/category_table.dart
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import '../../../../controllers/category/category_controller.dart';
+
 
 class CategoryTable extends StatelessWidget {
   const CategoryTable({super.key});
@@ -9,6 +11,7 @@ class CategoryTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = CategoryController.to;
+
 
     return Obx(() {
       if (controller.isLoading.value) {
@@ -71,5 +74,6 @@ class CategoryTable extends StatelessWidget {
         },
       );
     });
+
   }
 }
