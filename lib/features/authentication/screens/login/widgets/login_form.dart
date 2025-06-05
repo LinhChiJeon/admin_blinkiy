@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:admin_blinkiy/utils/constants/sizes.dart';
 import 'package:admin_blinkiy/utils/constants/text_strings.dart';
 import 'package:admin_blinkiy/utils/constants/icon_constants.dart';
-import 'package:admin_blinkiy/lib/features/authentication/screens/admin/admin_home_screen.dart';
-
-import '../../admin/admin_home_screen.dart';
-
+import 'package:admin_blinkiy/features/authentication/screens/admin/admin_home_screen.dart';
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
 
