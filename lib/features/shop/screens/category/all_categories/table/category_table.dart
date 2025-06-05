@@ -1,84 +1,79 @@
+// lib/features/shop/screens/category/all_categories/table/category_table.dart
 import 'package:flutter/material.dart';
-import '../../../../models/category_model.dart';
-import 'category_table_source.dart';
+
+import 'package:get/get.dart';
+import '../../../../controllers/category/category_controller.dart';
+
 
 class CategoryTable extends StatelessWidget {
   const CategoryTable({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final mockCategories = CategoryTableSource.mockCategories;
+    final controller = CategoryController.to;
 
-    return ListView.separated(
-      itemCount: mockCategories.length,
-      separatorBuilder: (_, __) => const Divider(height: 0, thickness: 0.5, color: Color(0xFFEEEEEE)),
-      itemBuilder: (context, index) {
-        final cat = mockCategories[index];
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 4),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: (cat.image != null && cat.image!.isNotEmpty)
-                    ? Image.network(
-                  cat.image!,
-                  width: 44,
-                  height: 44,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    width: 44,
-                    height: 44,
-                    color: Colors.grey[300],
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.image_not_supported, color: Colors.grey, size: 28),
-                  ),
-                )
-                    : Container(
-                  width: 44,
-                  height: 44,
-                  color: Colors.grey[300],
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.category, color: Colors.white, size: 28),
+
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      final categories = controller.filteredItems;
+      if (categories.isEmpty) {
+        return const Center(child: Text('No categories found.'));
+      }
+      return ListView.separated(
+        itemCount: categories.length,
+        separatorBuilder: (_, __) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          final cat = categories[index];
+          return ListTile(
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                width: 40,
+                height: 40,
+                color: Colors.grey[200],
+                child: const Icon(Icons.category, size: 28, color: Colors.blueGrey),
+              ),
+            ),
+            title: Text(cat.name, maxLines: 2, overflow: TextOverflow.ellipsis),
+            subtitle: Row(
+              children: [
+                if (cat.parentId.isNotEmpty)
+                  Text('Parent: ${cat.parentId}   ', style: const TextStyle(fontSize: 12)),
+                Icon(
+                  cat.isFeatured ? Icons.star : Icons.star_border,
+                  color: cat.isFeatured ? Colors.orange : Colors.grey,
+                  size: 16,
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  cat.name,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                const SizedBox(width: 8),
+                Text(cat.formattedDate, style: const TextStyle(fontSize: 12)),
+              ],
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit, color: Colors.blue),
+                  onPressed: () {
+                    // Navigate to edit
+                  },
                 ),
-              ),
-              Icon(
-                cat.isFeatured ? Icons.star_rounded : Icons.star_border_rounded,
-                color: cat.isFeatured ? Colors.orange : Colors.grey,
-                size: 22,
-              ),
-              IconButton(
-                icon: const Icon(Icons.edit, color: Colors.blueAccent, size: 22),
-                onPressed: () {
-                  // TODO: Chuyển sang màn sửa category
-                },
-                tooltip: 'Chỉnh sửa',
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.redAccent, size: 22),
-                onPressed: () {
-                  // TODO: Xóa category
-                },
-                tooltip: 'Xóa',
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () {
+                    // Delete logic
+                  },
+                ),
+              ],
+            ),
+            onTap: () {
+              // View details
+            },
+          );
+        },
+      );
+    });
+
   }
 }

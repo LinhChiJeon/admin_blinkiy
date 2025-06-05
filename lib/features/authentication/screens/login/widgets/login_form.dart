@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:admin_blinkiy/utils/constants/sizes.dart';
 import 'package:admin_blinkiy/utils/constants/text_strings.dart';
 import 'package:admin_blinkiy/utils/constants/icon_constants.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:iconsax/iconsax.dart';
 
 
 
+import '../../../../../lib/features/authentication/controllers/login_controller.dart';
+import '../../../../../routes/routes.dart';
+import '../../../../../utils/validators/validation.dart';
 import '../../../../shop/screens/dashboard/dashboard.dart';
 
 class LoginForm extends StatelessWidget {
@@ -77,13 +83,14 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
 
-                onPressed: () {
-                  // TODO: Thêm xác thực đăng nhập ở đây nếu cần
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const DashboardScreen()),
-                  );
-                },
+                // onPressed: () {
+                //   // TODO: Thêm xác thực đăng nhập ở đây nếu cần
+                //   Navigator.pushReplacement(
+                //     context,
+                //     MaterialPageRoute(builder: (_) => const DashboardScreen()),
+                //   );
+                // },
+                onPressed: () => controller.emailAndPasswordSignIn(),
 
                
                 child: const Text(TTexts.signIn),
