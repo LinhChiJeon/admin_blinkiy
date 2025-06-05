@@ -16,4 +16,14 @@ class ProductRepository extends GetxController {
       throw 'Something went wrong. Please try again';
     }
   }
+
+  Future<void> addProduct(ProductModel product) async {
+    try {
+      await _db.collection("Products").add(product.toJson());
+    } catch (e) {
+      throw 'Failed to add product: $e';
+    }
+  }
+
+
 }

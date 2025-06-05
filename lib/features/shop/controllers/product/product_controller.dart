@@ -33,4 +33,16 @@ class ProductController extends GetxController {
       // Handle error (snackbar, etc.)
     }
   }
+
+  Future<void> addProduct(ProductModel product) async {
+    try {
+      isLoading.value = true;
+      await _productRepository.addProduct(product);
+      await fetchData(); // Refresh product list
+    } catch (e) {
+      // Handle error (snackbar, etc.)
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../utils/helpers/cloudinary.dart';
+
 class ProductThumbnailPicker extends StatelessWidget {
   final String? thumbnail;
   final ValueChanged<String> onChanged;
@@ -9,6 +11,11 @@ class ProductThumbnailPicker extends StatelessWidget {
     required this.thumbnail,
     required this.onChanged,
   });
+
+  Future<void> _pickAndUpload(BuildContext context) async {
+    final url = await uploadImageToCloudinary();
+    if (url != null) onChanged(url);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +32,12 @@ class ProductThumbnailPicker extends StatelessWidget {
               children: const [
                 Icon(Icons.image_outlined, size: 22, color: Color(0xFF4F6AF6)),
                 SizedBox(width: 8),
-                Text(
-                  "Product Thumbnail",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
+                Text("Product Thumbnail", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               ],
             ),
             const SizedBox(height: 18),
             GestureDetector(
-              onTap: () async {
-                // TODO: mở picker ảnh, upload lên Firebase Storage, lấy url rồi gọi onChanged(url)
-              },
+              onTap: () => _pickAndUpload(context),
               child: Container(
                 height: 160,
                 width: double.infinity,
@@ -51,9 +53,7 @@ class ProductThumbnailPicker extends StatelessWidget {
                     const Icon(Icons.cloud_upload_outlined, size: 48, color: Color(0xFF4F6AF6)),
                     const SizedBox(height: 12),
                     OutlinedButton(
-                      onPressed: () {
-                        // TODO: mở picker ảnh và upload
-                      },
+                      onPressed: () => _pickAndUpload(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF4F6AF6),
                         side: const BorderSide(color: Color(0xFF4F6AF6)),

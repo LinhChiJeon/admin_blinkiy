@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../utils/helpers/cloudinary.dart';
+
 class ProductImagesPicker extends StatelessWidget {
   final List<String> images;
   final ValueChanged<List<String>> onChanged;
@@ -9,6 +11,11 @@ class ProductImagesPicker extends StatelessWidget {
     required this.images,
     required this.onChanged,
   });
+
+  Future<void> _pickAndUpload(BuildContext context) async {
+    final url = await uploadImageToCloudinary();
+    if (url != null) onChanged([...images, url]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +32,7 @@ class ProductImagesPicker extends StatelessWidget {
               children: const [
                 Icon(Icons.collections_outlined, size: 22, color: Color(0xFF4F6AF6)),
                 SizedBox(width: 8),
-                Text(
-                  "Additional Product Images",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
+                Text("Additional Product Images", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               ],
             ),
             const SizedBox(height: 14),
@@ -41,9 +45,7 @@ class ProductImagesPicker extends StatelessWidget {
                 itemBuilder: (context, index) {
                   if (index == images.length) {
                     return GestureDetector(
-                      onTap: () {
-                        // TODO: picker nhiều ảnh, up lên firebase, gọi onChanged([...])
-                      },
+                      onTap: () => _pickAndUpload(context),
                       child: Container(
                         width: 90,
                         height: 90,
