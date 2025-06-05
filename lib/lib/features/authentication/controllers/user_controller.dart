@@ -10,6 +10,27 @@ class UserController extends GetxController {
   static UserController get instance => Get.find();
   final userRepository = Get.put(UserRepository());
 
+  RxList<UserModel> allUsers = <UserModel>[].obs;
+  RxBool isLoading = false.obs;
+
+  @override
+  void onInit() {
+    fetchAllUsers();
+    super.onInit();
+  }
+
+  Future<void> fetchAllUsers() async {
+    try {
+      isLoading.value = true;
+      final users = await userRepository.fetchAllUsers();
+      allUsers.assignAll(users);
+    } catch (e) {
+      TLoaders.errorSnackBar(title: 'Error', message: e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<UserModel> fetchUserDetails () async{
     try {
       final user = await userRepository.fetchAdminDetails();

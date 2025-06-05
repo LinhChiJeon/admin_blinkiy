@@ -1,142 +1,84 @@
-class Product {
-  final String id;
-  final String categoryId;
-  final String description;
-  final List<String> images;
-  final bool isFeatured;
-  final int price;
-  final List<ProductAttribute> productAttributes;
-  final String productType; // Always "variable"
-  final List<ProductVariation> productVariations;
-  final int salePrice;
-  final int stock;
-  final String thumbnail;
-  final String title;
+import 'package:admin_blinkiy/features/shop/models/product_attribute_model.dart';
+import 'package:admin_blinkiy/features/shop/models/product_variation_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  Product({
+class ProductModel {
+  String id;
+  int stock;
+  // String? sku;
+  double price;
+  String title;
+  // DateTime? date;
+  double salePrice;
+  String thumbnail;
+  bool? isFeatured;
+  // BrandModel? brand;
+  String? description;
+  String? categoryId;
+  List<String>? images;
+  String? productType;
+  List<ProductAttributeModel>? productAttributes;
+  List<ProductVariationModel>? productVariations;
+
+  ProductModel({
     required this.id,
-    required this.categoryId,
-    required this.description,
-    required this.images,
-    required this.isFeatured,
-    required this.price,
-    required this.productAttributes,
-    required this.productType,
-    required this.productVariations,
-    required this.salePrice,
     required this.stock,
-    required this.thumbnail,
+    required this.price,
     required this.title,
+    required this.thumbnail,
+    this.isFeatured,
+    this.description,
+    this.salePrice = 0.0,
+    this.categoryId,
+    this.images,
+    this.productType,
+    this.productAttributes,
+    this.productVariations
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> attrs = json['productAttributes'] ?? [];
-    final List<dynamic> vars = json['productVariations'] ?? [];
+  static ProductModel empty() => ProductModel(id: '', title: '', stock: 8, price: 0, thumbnail: '',);
 
-    // price: max price in variations
-    int maxPrice = 0;
-    int minSalePrice = 0;
-    int totalStock = 0;
-    if (vars.isNotEmpty) {
-      maxPrice = vars.map((e) => e['Price'] as int? ?? 0).reduce((a, b) => a > b ? a : b);
-      // Find all SalePrice (if any), get min
-      final salePrices = vars
-          .map((e) => e['SalePrice'] as int?)
-          .where((e) => e != null)
-          .cast<int>()
-          .toList();
-      minSalePrice = salePrices.isNotEmpty ? salePrices.reduce((a, b) => a < b ? a : b) : 0;
-      // Sum stock
-      totalStock = vars
-          .map((e) => e['Stock'] as int? ?? 0)
-          .fold(0, (prev, curr) => prev + curr);
-    }
-
-    return Product(
-      id: json['id'] ?? '',
-      categoryId: json['categoryId']?.toString() ?? '',
-      description: json['description'] ?? '',
-      images: (json['images'] as List<dynamic>?)?.cast<String>() ?? [],
-      isFeatured: json['isFeatured'] ?? false,
-      price: maxPrice,
-      productAttributes: attrs.map((e) => ProductAttribute.fromJson(e)).toList(),
-      productType: json['productType'] ?? 'variable',
-      productVariations: vars.map((e) => ProductVariation.fromJson(e)).toList(),
-      salePrice: minSalePrice,
-      stock: totalStock,
-      thumbnail: json['thumbnail'] ?? '',
-      title: json['title'] ?? '',
-    );
+  toJson(){
+    /// Json Format
+    return {
+      'Title': title,
+      'Stock': stock,
+      'Price': price,
+      'Images': images ?? [],
+      'Thumbnail': thumbnail,
+      'SalePrice': salePrice,
+      'IsFeatured': isFeatured,
+      'CategoryId': categoryId,
+      // 'Brand': brand!.toJson(),
+      'Description': description,
+      'ProductType': productType,
+      'ProductAttributes': productAttributes != null ? productAttributes!.map((e) => e.toJson()).toList():[],
+      'ProductVariations': productVariations != null ? productVariations!.map((e) => e.toJson()).toList():[],
+    };
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'categoryId': categoryId,
-    'description': description,
-    'images': images,
-    'isFeatured': isFeatured,
-    'price': price,
-    'productAttributes': productAttributes.map((e) => e.toJson()).toList(),
-    'productType': productType,
-    'productVariations': productVariations.map((e) => e.toJson()).toList(),
-    'salePrice': salePrice,
-    'stock': stock,
-    'thumbnail': thumbnail,
-    'title': title,
-  };
-}
-
-class ProductAttribute {
-  final String name;
-  final List<String> values;
-
-  ProductAttribute({
-    required this.name,
-    required this.values,
-  });
-
-  factory ProductAttribute.fromJson(Map<String, dynamic> json) => ProductAttribute(
-    name: json['Name'] ?? '',
-    values: (json['Values'] as List<dynamic>?)?.cast<String>() ?? [],
-  );
-
-  Map<String, dynamic> toJson() => {
-    'Name': name,
-    'Values': values,
-  };
-}
-
-class ProductVariation {
-  final int? price;
-  final int? salePrice;
-  final int? stock;
-  final Map<String, dynamic> attributes; // dynamic attributes, e.g. size
-
-  ProductVariation({
-    this.price,
-    this.salePrice,
-    this.stock,
-    this.attributes = const {},
-  });
-
-  factory ProductVariation.fromJson(Map<String, dynamic> json) {
-    // Lấy các trường đặc biệt ra, còn lại là attributes
-    final data = Map<String, dynamic>.from(json);
-    final price = data.remove('Price') as int?;
-    final salePrice = data.remove('SalePrice') as int?;
-    final stock = data.remove('Stock') as int?;
-    return ProductVariation(
-      price: price,
-      salePrice: salePrice,
-      stock: stock,
-      attributes: data, // các thuộc tính động (ví dụ: Size, Color...)
-    );
+  factory ProductModel.fromSnapshot (DocumentSnapshot<Map<String, dynamic>> document) {
+    if(document.data()==null) return ProductModel.empty();
+    final data = document.data()!;
+    return ProductModel(
+      id: document.id,
+      // sku: data['SKU'],
+      title: data['Title'],
+      stock: data['Stock'] ?? 0,
+      isFeatured: data['IsFeatured'] ?? false,
+      price: double.parse((data['Price'] ?? 0.0).toString()),
+      salePrice: double.parse((data['SalePrice'] ?? 0.0).toString()),
+      thumbnail: data['Thumbnail'] ?? '',
+      categoryId: data['CategoryId'] ?? '',
+      description: data['Description'] ?? '',
+      productType: data['ProductType'] ?? '',
+      // brand: BrandModel.fromJson(data['Brand),
+      images: data['Images'] != null ? List<String>.from(data['Images']):[],
+      productAttributes: (data['ProductAttributes'] as List<dynamic>).map((e) => ProductAttributeModel.fromJson(e)).toList(),
+      productVariations: (data['ProductVariations'] as List<dynamic>).map((e) => ProductVariationModel.fromJson(e)).toList(),
+    ); // ProductModel
   }
 
-  Map<String, dynamic> toJson() => {
-    if (price != null) 'Price': price,
-    if (salePrice != null) 'SalePrice': salePrice,
-    if (stock != null) 'Stock': stock,
-    ...attributes,
-  };
+
+
 }
