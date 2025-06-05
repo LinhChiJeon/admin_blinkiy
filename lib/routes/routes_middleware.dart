@@ -1,3 +1,4 @@
+import 'package:admin_blinkiy/lib/data/repositories/authentication/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,7 +8,6 @@ class TRouteMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     print('......................... Middleware Called ..............................');
-    final isAuthenticated = false; // Thay false bằng logic kiểm tra đăng nhập thực tế
-    return isAuthenticated ? null : const RouteSettings(name: Routes.login);
+    return AuthenticationRepository.instance.isAuthenticated ? null : const RouteSettings(name: Routes.login);
   }
 }

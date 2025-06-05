@@ -1,9 +1,15 @@
+
+import 'package:admin_blinkiy/features/authentication/screens/admin/dashboard_screen.dart';
+import 'package:admin_blinkiy/features/authentication/screens/login/responsive_screens/login_mobile.dart';
+
 import 'package:admin_blinkiy/features/authentication/screens/login/login.dart';
+
 import 'package:get/get.dart';
 import '../features/shop/screens/category/all_categories/categories.dart';
 //import '../features/shop/screens/category/create_category/create_category.dart';
 //import '../features/shop/screens/category/edit_category/edit_category.dart';
 import 'routes.dart';
+
 
 class appRoute {
   static final pages = [
@@ -24,5 +30,6 @@ class appRoute {
     //   page: () => const EditCategoryScreen(),
     // ),
     // Thêm các GetPage khác nếu có
+
   ];
 }

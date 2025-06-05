@@ -8,13 +8,17 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import 'app.dart';
 
+import 'firebase_options.dart';
+import 'lib/data/repositories/authentication/authentication_repository.dart';
+
 /// Entry point of Flutter App
 Future<void> main() async {
   // Ensure that widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
+  .then((value) => Get.put(AuthenticationRepository())); // Initialize AuthRepository
 
   // Main App Starts here...
   runApp(const App());
