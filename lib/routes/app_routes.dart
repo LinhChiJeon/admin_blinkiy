@@ -1,18 +1,35 @@
+
 import 'package:admin_blinkiy/features/authentication/screens/admin/dashboard_screen.dart';
 import 'package:admin_blinkiy/features/authentication/screens/login/responsive_screens/login_mobile.dart';
+
+import 'package:admin_blinkiy/features/authentication/screens/login/login.dart';
+
 import 'package:get/get.dart';
+import '../features/shop/screens/category/all_categories/categories.dart';
+//import '../features/shop/screens/category/create_category/create_category.dart';
+//import '../features/shop/screens/category/edit_category/edit_category.dart';
 import 'routes.dart';
-import 'routes_middleware.dart';
-import '../features/authentication/screens/login/login.dart';
 
 
+class appRoute {
+  static final pages = [
+    GetPage(
+      name: Routes.login,
+      page: () => /* LoginScreen hoặc tương ứng */LoginScreen(),
+    ),
+    GetPage(
+      name: Routes.categories,
+      page: () => const CategoriesScreen(),
+    ),
+    // GetPage(
+    //   name: Routes.createCategory,
+    //   page: () => const CreateCategoryScreen(),
+    // ),
+    // GetPage(
+    //   name: Routes.editCategory,
+    //   page: () => const EditCategoryScreen(),
+    // ),
+    // Thêm các GetPage khác nếu có
 
-
-class TAppRoute {
-  static final List<GetPage> pages = [
-    GetPage(name: Routes.login, page: () => const LoginScreen()),
-    // GetPage(name: TRoutes.secondScreen, page: () => const SecondScreen()),
-    // GetPage(name: TRoutes.secondScreenWithUID, page: () => const SecondScreen()),
-    GetPage(name: Routes.dashboard, page: () => const DashboardScreen(), middlewares: [ TRouteMiddleware() ]), // Add middleware to the dashboard route
   ];
 }
