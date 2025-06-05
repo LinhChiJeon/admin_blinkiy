@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../features/shop/screens/category/all_categories/categories.dart';
 //import '../features/shop/screens/category/create_category/create_category.dart';
 //import '../features/shop/screens/category/edit_category/edit_category.dart';
+import '../features/shop/screens/dashboard/dashboard.dart';
 import '../features/shop/screens/product/all_products/products.dart';
 import 'routes.dart';
 
@@ -12,6 +13,9 @@ class appRoute {
       name: Routes.login,
       page: () => /* LoginScreen hoặc tương ứng */LoginScreen(),
     ),
+
+    GetPage(name: Routes.dashboard, page: () => const DashboardScreen()),
+
     GetPage(
       name: Routes.categories,
       page: () => const CategoriesScreen(),
