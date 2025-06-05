@@ -1,3 +1,4 @@
+import 'package:admin_blinkiy/features/authentication/screens/admin/dashboard_screen.dart';
 import 'package:admin_blinkiy/features/authentication/screens/login/responsive_screens/login_mobile.dart';
 import 'package:get/get.dart';
 import 'routes.dart';
@@ -12,5 +13,6 @@ class TAppRoute {
     GetPage(name: Routes.login, page: () => const LoginScreen()),
     // GetPage(name: TRoutes.secondScreen, page: () => const SecondScreen()),
     // GetPage(name: TRoutes.secondScreenWithUID, page: () => const SecondScreen()),
+    GetPage(name: Routes.dashboard, page: () => const DashboardScreen(), middlewares: [ TRouteMiddleware() ]), // Add middleware to the dashboard route
   ];
 }
