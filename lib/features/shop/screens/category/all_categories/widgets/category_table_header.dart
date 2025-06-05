@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../create_category/create_category.dart';
+
 class CategoryTableHeader extends StatelessWidget {
   const CategoryTableHeader({super.key});
 
@@ -20,6 +22,9 @@ class CategoryTableHeader extends StatelessWidget {
           ),
           onPressed: () {
             // TODO: Chuyển sang màn tạo mới category
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const CreateCategoryScreen()),
+            );
           },
         ),
         const SizedBox(width: 10),
