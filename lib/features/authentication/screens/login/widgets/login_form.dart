@@ -4,19 +4,25 @@ import 'package:admin_blinkiy/utils/constants/text_strings.dart';
 import 'package:admin_blinkiy/utils/constants/icon_constants.dart';
 
 
+
 import '../../../../shop/screens/dashboard/dashboard.dart';
+
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LoginController());
     return Form(
+      key: controller.loginFormKey,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.spaceBtwSections),
         child: Column(
           children: [
             // Email
             TextFormField(
+              controller: controller.email,
+              validator: TValidator.validateEmail,
               decoration: InputDecoration(
                 labelText: TTexts.email,
                 // prefixIcon: const Icon(TIcons.direct_right),
@@ -25,14 +31,19 @@ class LoginForm extends StatelessWidget {
             const SizedBox(height: TSizes.spaceBtwInputFields),
 
             // Password
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: TTexts.password,
-                // prefixIcon: const Icon(TIcons.password_check),
-                // suffixIcon: IconButton(
-                  // onPressed: () {},
-                  // icon: const Icon(TIcons.eye_slash),
-                // ),
+            Obx(
+              () => TextFormField(
+                controller: controller.password,
+                validator: (value) => TValidator.validateEmptyText('Password', value),
+                obscureText: controller.hidePassword.value,
+                decoration: InputDecoration(
+                  labelText: TTexts.password,
+                  prefixIcon: const Icon(Iconsax.password_check),
+                  suffixIcon: IconButton(
+                    onPressed: () => controller.hidePassword.value = !controller.hidePassword.value,
+                    icon: Icon(controller.hidePassword.value ? Iconsax.eye_slash : Iconsax.eye),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: TSizes.spaceBtwInputFields / 2),
@@ -47,16 +58,14 @@ class LoginForm extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Checkbox(value: true, onChanged: (value) {}),
+                    Obx(() => Checkbox(value: controller.rememeberMe.value, onChanged: (value) => controller.rememeberMe.value = value!)),
                     const Text(TTexts.rememberMe),
                   ],
                 ),
 
                 /// Forgot Password
                 TextButton(
-                  onPressed: () {
-                    // Handle forgot password action
-                  },
+                  onPressed: () => Get.toNamed(Routes.forgetPassword),
                   child: const Text(TTexts.forgetPassword),
                 ),
               ],
@@ -67,6 +76,7 @@ class LoginForm extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
+
                 onPressed: () {
                   // TODO: Thêm xác thực đăng nhập ở đây nếu cần
                   Navigator.pushReplacement(
@@ -74,6 +84,8 @@ class LoginForm extends StatelessWidget {
                     MaterialPageRoute(builder: (_) => const DashboardScreen()),
                   );
                 },
+
+               
                 child: const Text(TTexts.signIn),
               ),
             ),

@@ -62,7 +62,7 @@ class TImages {
   static String paperPlaneAnimation = "assets/images/animations/110052-paper-plane.json";
   static String carAnimation = "assets/images/animations/136491-animation-lottie-car-rides.json";
   static String pencilAnimation = "assets/images/animations/140429-pencil-drawing.json";
-  static String docerAnimation = "assets/images/animations/141594-animation-of-docer.json";
+  static String docerAnimation = "assets/images/animations/congratulations.json";
   static String searchAnimation = "assets/images/animations/72785-searching.json";
   static String emptyAnimation = "assets/images/animations/72785-searching.json";
   static String securityAnimation = "assets/images/animations/67263-security-icon-transparent.json";
