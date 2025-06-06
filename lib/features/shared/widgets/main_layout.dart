@@ -32,7 +32,7 @@ class MainLayout extends StatelessWidget {
         Navigator.pushReplacementNamed(context, '/customers');
         break;
       case 4:
-        Navigator.pushReplacementNamed(context, '/orders');
+        Navigator.pushReplacementNamed(context, '/all-orders');
         break;
 
     // Thêm các case khác nếu cần
