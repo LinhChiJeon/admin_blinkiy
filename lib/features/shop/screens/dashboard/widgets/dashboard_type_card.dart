@@ -44,33 +44,50 @@ class DashboardTypeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600, fontSize: 16, color: Color(0xFF232940))),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Color(0xFF232940),
+                  ),
+                ),
                 const SizedBox(height: 7),
-                Text(value,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 23, color: Color(0xFF232940))),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 23,
+                    color: Color(0xFF232940),
+                  ),
+                ),
                 const SizedBox(height: 7),
                 Row(
                   children: [
-                    Icon(Icons.arrow_upward,
-                        color: Color(0xFF05C46B), size: 17),
+                    Icon(
+                      Icons.arrow_upward,
+                      color: Color(0xFF05C46B),
+                      size: 17,
+                    ),
                     Text(
                       "${percent.toStringAsFixed(1)}%",
                       style: const TextStyle(
-                          color: Color(0xFF05C46B),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15),
+                        color: Color(0xFF05C46B),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
                     ),
                     const SizedBox(width: 6),
-                    Text(compareText,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.normal,
-                            color: Color(0xFF8F99A8),
-                            fontSize: 13)),
+                    Text(
+                      compareText,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal,
+                        color: Color(0xFF8F99A8),
+                        fontSize: 13,
+                      ),
+                    ),
                   ],
-                )
+                ),
               ],
             ),
           ),
