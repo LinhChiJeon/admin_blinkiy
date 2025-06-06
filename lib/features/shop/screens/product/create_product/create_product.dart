@@ -61,10 +61,12 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     // Register CategoryController if not already registered
     if (!Get.isRegistered<CategoryController>()) {
       Get.put(CategoryController());
     }
+
     final categoryController = CategoryController.to;
 
     return Scaffold(
@@ -89,6 +91,8 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             if (categories.isEmpty) {
               return const Center(child: Text('No categories found'));
             }
+
+
 
             if (selectedCategoryId == null && categories.isNotEmpty) {
               selectedCategoryId = categories.first.id;

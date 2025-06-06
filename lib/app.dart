@@ -28,7 +28,7 @@ class App extends StatelessWidget {
       unknownRoute: GetPage(
         name: '/page-not-found',
         page: () => const Scaffold(
-          body: Center(child: Text('Page Not Found')),
+          body: Center(child: Text('Không tìm thấy trang này')),
         ),
       ),
       debugShowCheckedModeBanner: false,

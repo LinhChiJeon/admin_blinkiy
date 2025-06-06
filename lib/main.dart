@@ -10,6 +10,8 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import 'app.dart';
 
+import 'features/shop/controllers/category/category_controller.dart';
+import 'features/shop/controllers/order/order_controller.dart';
 import 'firebase_options.dart';
 import 'lib/data/repositories/authentication/authentication_repository.dart';
 
@@ -19,9 +21,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-  .then((value) => Get.put(AuthenticationRepository())); // Initialize AuthRepository
-
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  Get.put(AuthenticationRepository());
+  Get.put(CategoryController());
+  Get.put(OrderController());
   // Main App Starts here...
   runApp(const App());
 }
