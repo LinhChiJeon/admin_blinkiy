@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../controllers/category/category_controller.dart';
 import '../../../controllers/product/product_controller.dart';
-import '../../../models/category_model.dart';
 import '../../../models/product_model.dart';
-import 'widgets/category_selector.dart';
+import '../../../models/category_model.dart';
 import 'widgets/product_basic_info_form.dart';
 import 'widgets/product_thumbnail_picker.dart';
 import 'widgets/product_images_picker.dart';
@@ -49,7 +48,6 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       salePrice: (mainVariation?.salePrice ?? 0).toDouble(),
       stock: mainVariation?.stock ?? 0,
       productType: 'variable',
-      // You can map sizeVariations to productVariations if needed
     );
 
     try {
@@ -64,6 +62,8 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final categoryController = CategoryController.to;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FB),
       appBar: AppBar(
@@ -78,73 +78,91 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       ),
       body: Stack(
         children: [
-          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: FirebaseFirestore.instance.collection('categories').snapshots(),
-            builder: (context, snapshot) {
-              List<CategoryModel> categories = [];
-              if (snapshot.hasData) {
-                categories = snapshot.data!.docs.map((doc) => CategoryModel.fromSnapshot(doc)).toList();
-              }
-              return Form(
-                key: _formKey,
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  children: [
-                    CategorySelector(
-                      selectedId: selectedCategoryId,
-                      categories: categories,
-                      onChanged: (id) => setState(() => selectedCategoryId = id),
+          Obx(() {
+            final categories = categoryController.allItems;
+            if (categoryController.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (categories.isEmpty) {
+              return const Center(child: Text('No categories found'));
+            }
+
+            // Nếu chưa chọn, tự động chọn category đầu tiên
+            if (selectedCategoryId == null && categories.isNotEmpty) {
+              selectedCategoryId = categories.first.id;
+            }
+
+            return Form(
+              key: _formKey,
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                children: [
+                  DropdownButtonFormField<String>(
+                    isExpanded: true,
+                    value: selectedCategoryId,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      labelText: "Category",
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     ),
-                    const SizedBox(height: 18),
-                    ProductBasicInfoForm(
-                      titleController: titleController,
-                      descController: descController,
-                    ),
-                    const SizedBox(height: 18),
-                    ProductThumbnailPicker(
-                      thumbnail: thumbnail,
-                      onChanged: (value) => setState(() => thumbnail = value),
-                    ),
-                    const SizedBox(height: 18),
-                    ProductImagesPicker(
-                      images: images,
-                      onChanged: (imgs) => setState(() => images = imgs),
-                    ),
-                    const SizedBox(height: 18),
-                    SizeVariationsTable(
-                      variations: sizeVariations,
-                      onChanged: (vals) => setState(() => sizeVariations = vals),
-                    ),
-                    const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.black87,
-                            side: const BorderSide(color: Color(0xFFD3D3D3)),
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                          ),
-                          child: const Text('Discard'),
+                    items: categories
+                        .map((c) => DropdownMenuItem(
+                      value: c.id,
+                      child: Text(c.name),
+                    ))
+                        .toList(),
+                    onChanged: (id) => setState(() => selectedCategoryId = id),
+                    validator: (v) => (v == null || v.isEmpty) ? "Please select a category" : null,
+                  ),
+                  const SizedBox(height: 18),
+                  ProductBasicInfoForm(
+                    titleController: titleController,
+                    descController: descController,
+                  ),
+                  const SizedBox(height: 18),
+                  ProductThumbnailPicker(
+                    thumbnail: thumbnail,
+                    onChanged: (value) => setState(() => thumbnail = value),
+                  ),
+                  const SizedBox(height: 18),
+                  ProductImagesPicker(
+                    images: images,
+                    onChanged: (imgs) => setState(() => images = imgs),
+                  ),
+                  const SizedBox(height: 18),
+                  SizeVariationsTable(
+                    variations: sizeVariations,
+                    onChanged: (vals) => setState(() => sizeVariations = vals),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.black87,
+                          side: const BorderSide(color: Color(0xFFD3D3D3)),
+                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                         ),
-                        ElevatedButton(
-                          onPressed: isSaving ? null : _save,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4F6AF6),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                          ),
-                          child: const Text('Save Changes'),
+                        child: const Text('Discard'),
+                      ),
+                      ElevatedButton(
+                        onPressed: isSaving ? null : _save,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4F6AF6),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                  ],
-                ),
-              );
-            },
-          ),
+                        child: const Text('Save Changes'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            );
+          }),
           if (isSaving)
             Container(
               color: Colors.black26,

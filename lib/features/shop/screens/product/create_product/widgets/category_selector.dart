@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../models/category_model.dart';
 
-
 class CategorySelector extends StatelessWidget {
   final String? selectedId;
   final List<CategoryModel> categories;
@@ -43,12 +42,16 @@ class CategorySelector extends StatelessWidget {
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               ),
-              items: categories
-                  .map((c) => DropdownMenuItem(
-                value: c.id,
-                child: Text(c.name),
-              ))
-                  .toList(),
+              items: [
+                const DropdownMenuItem<String>(
+                  value: null,
+                  child: Text('Chọn category'),
+                ),
+                ...categories.map((c) => DropdownMenuItem(
+                  value: c.id,
+                  child: Text(c.name),
+                )),
+              ],
               onChanged: onChanged,
               validator: (v) => (v == null || v.isEmpty) ? "Please select a category" : null,
             ),
