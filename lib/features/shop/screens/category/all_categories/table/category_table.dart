@@ -37,18 +37,21 @@ class CategoryTable extends StatelessWidget {
               ),
             ),
             title: Text(cat.name, maxLines: 2, overflow: TextOverflow.ellipsis),
-            subtitle: Row(
-              children: [
-                if (cat.parentId.isNotEmpty)
-                  Text('Parent: ${cat.parentId}   ', style: const TextStyle(fontSize: 12)),
-                Icon(
-                  cat.isFeatured ? Icons.star : Icons.star_border,
-                  color: cat.isFeatured ? Colors.orange : Colors.grey,
-                  size: 16,
-                ),
-                const SizedBox(width: 8),
-                Text(cat.formattedDate, style: const TextStyle(fontSize: 12)),
-              ],
+            subtitle: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  if (cat.parentId.isNotEmpty)
+                    Text('Parent: ${cat.parentId}   ', style: const TextStyle(fontSize: 12)),
+                  Icon(
+                    cat.isFeatured ? Icons.star : Icons.star_border,
+                    color: cat.isFeatured ? Colors.orange : Colors.grey,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(cat.formattedDate, style: const TextStyle(fontSize: 12)),
+                ],
+              ),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
