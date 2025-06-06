@@ -94,6 +94,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
 
 
+
             if (selectedCategoryId == null && categories.isNotEmpty) {
               selectedCategoryId = categories.first.id;
             }
