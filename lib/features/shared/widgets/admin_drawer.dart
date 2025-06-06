@@ -1,3 +1,4 @@
+import 'package:admin_blinkiy/features/shop/screens/order/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -5,6 +6,8 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../lib/data/repositories/authentication/authentication_repository.dart';
 import '../../../utils/constants/colors.dart';
 import '../../authentication/screens/login/login.dart';
+import '../../shop/screens/order/order_form_screen.dart';
+import '../../shop/screens/order/order_list_screen.dart';
 
 class AdminDrawer extends StatelessWidget {
   final int selectedIndex;
@@ -56,8 +59,8 @@ class AdminDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Log out'),
-            onTap: () => controller.logout(),
-          ),
+            // onTap: () => controller.logout(),
+            onTap: () => Get.to(() => const OrderListScreen()),          ),
         ],
       ),
     );

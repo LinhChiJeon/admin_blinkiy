@@ -9,7 +9,8 @@ class Routes {
   static const createCategory = '/categories/create';
   static const editCategory = '/categories/edit'; // Có thể thêm tham số sau này
   static const customers = '/customers'; // Có thể thêm tham số sau này
-  
+
+  static const orders = '/orders'; // Có thể thêm tham số sau này
 
   static List sidebarMenuItems = [
     // Thêm các màn bạn muốn hiển thị trong sidebar
