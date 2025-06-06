@@ -90,8 +90,7 @@ flutter:
     - assets/images/banners/
     - assets/images/navigation/
     - assets/images/animations/
-    - assets/images/user/
-    - assets/images/products/
+
 
   # To add assets to your application, add an assets section, like this:
 

@@ -59,8 +59,8 @@ class AdminDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Log out'),
-            // onTap: () => controller.logout(),
-            onTap: () => Get.to(() => const OrderListScreen()),          ),
+            onTap: () => controller.logout(),
+                      ),
         ],
       ),
     );

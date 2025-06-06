@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../controllers/order/order_controller.dart';
 import '../../controllers/product/product_controller.dart';
@@ -7,6 +8,7 @@ import '../../models/order_model.dart';
 import '../../models/address_model.dart';
 import '../../models/cart_item_model.dart';
 import '../../models/product_model.dart';
+import '../../models/user_model.dart';
 
 class OrderFormScreen extends StatefulWidget {
   const OrderFormScreen({super.key});
@@ -16,7 +18,6 @@ class OrderFormScreen extends StatefulWidget {
 }
 
 class _OrderFormScreenState extends State<OrderFormScreen> {
-  // Register controllers before using .to
   static void _ensureControllersRegistered() {
     if (!Get.isRegistered<ProductController>()) {
       Get.put(ProductController());
@@ -26,7 +27,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     }
   }
 
-  // This runs before any instance fields are initialized
   _OrderFormScreenState() {
     _ensureControllersRegistered();
   }
@@ -34,7 +34,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
   late final ProductController _productController = ProductController.to;
 
   final _formKey = GlobalKey<FormState>();
-  final _userIdController = TextEditingController();
   final _paymentMethodController = TextEditingController();
   final _addressNameController = TextEditingController();
   final _addressPhoneController = TextEditingController();
@@ -44,17 +43,32 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
   final _addressProvinceController = TextEditingController();
 
   bool _isSubmitting = false;
-  final Map<String, int> _selectedProducts = {}; // productId -> quantity
+  final Map<String, int> _selectedProducts = {};
+
+  // User dropdown state
+  List<UserModel> _users = [];
+  String? _selectedUserId;
 
   @override
   void initState() {
     super.initState();
     _productController.fetchData();
+    _fetchUsers();
+  }
+
+  Future<void> _fetchUsers() async {
+    final snapshot = await FirebaseFirestore.instance.collection('Users').get();
+    final users = snapshot.docs.map((doc) => UserModel.fromSnapshot(doc)).toList();
+    setState(() {
+      _users = users;
+      if (_users.isNotEmpty) {
+        _selectedUserId = _users.first.id;
+      }
+    });
   }
 
   @override
   void dispose() {
-    _userIdController.dispose();
     _paymentMethodController.dispose();
     _addressNameController.dispose();
     _addressPhoneController.dispose();
@@ -79,7 +93,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
       province: _addressProvinceController.text,
     );
 
-    // Build CartItemModel list from selected products
     final items = _selectedProducts.entries.map((entry) {
       final product = _productController.allItems.firstWhere((p) => p.id == entry.key);
       return CartItemModel(
@@ -95,7 +108,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
     final order = OrderModel(
       id: '',
-      userId: _userIdController.text,
+      userId: _selectedUserId ?? '',
       status: OrderStatus.pending,
       totalAmount: totalAmount,
       orderDate: DateTime.now(),
@@ -123,9 +136,16 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
           child: ListView(
             children: [
               const Text('User Info', style: TextStyle(fontWeight: FontWeight.bold)),
-              TextFormField(
-                controller: _userIdController,
-                decoration: const InputDecoration(labelText: 'User ID'),
+              DropdownButtonFormField<String>(
+                value: _selectedUserId,
+                decoration: const InputDecoration(labelText: 'User'),
+                items: _users
+                    .map((user) => DropdownMenuItem(
+                  value: user.id,
+                  child: Text(user.fullName.isNotEmpty ? user.fullName : user.email),
+                ))
+                    .toList(),
+                onChanged: (val) => setState(() => _selectedUserId = val),
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 16),
@@ -217,7 +237,6 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
               SizedBox(height: TSizes.spaceBtwInputFields),
-
               TextFormField(
                 controller: _addressProvinceController,
                 decoration: const InputDecoration(labelText: 'Province'),

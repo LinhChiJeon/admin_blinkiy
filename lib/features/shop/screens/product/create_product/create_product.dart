@@ -34,11 +34,10 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => isSaving = true);
 
-    // Use the first variation as the main price/stock, or default to 0
     final mainVariation = sizeVariations.isNotEmpty ? sizeVariations.first : null;
 
     final product = ProductModel(
-      id: '', // Firestore will generate ID
+      id: '',
       title: titleController.text.trim(),
       description: descController.text.trim(),
       thumbnail: thumbnail ?? '',
@@ -54,7 +53,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       await ProductController.to.addProduct(product);
       if (mounted) Navigator.pop(context);
     } catch (e) {
-      // Show error if needed
+      // Handle error if needed
     } finally {
       if (mounted) setState(() => isSaving = false);
     }
@@ -62,6 +61,12 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    // Register CategoryController if not already registered
+    if (!Get.isRegistered<CategoryController>()) {
+      Get.put(CategoryController());
+    }
+
     final categoryController = CategoryController.to;
 
     return Scaffold(
@@ -87,7 +92,8 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
               return const Center(child: Text('No categories found'));
             }
 
-            // Nếu chưa chọn, tự động chọn category đầu tiên
+
+
             if (selectedCategoryId == null && categories.isNotEmpty) {
               selectedCategoryId = categories.first.id;
             }

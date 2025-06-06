@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../utils/formatters/formatter.dart';
 import '../../controllers/order/order_controller.dart';
 import 'order_form_screen.dart';
 
@@ -39,7 +40,9 @@ class OrderListScreen extends StatelessWidget {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Total: \$${order.totalAmount.toStringAsFixed(2)}'),
+                  if (order.address != null)
+                    Text('Name: ${order.address!.name}'),
+                  Text('Total: ${TFormatter.formatCurrency(order.totalAmount)}'),
                   Text('Status: ${order.status.name}'),
                   Text('Date: ${order.orderDate.toLocal()}'),
                 ],
