@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../../../utils/helpers/cloudinary.dart';
+import '../../../controllers/category/category_controller.dart';
+import '../../../models/category_model.dart'; // Đảm bảo đường dẫn import đúng
 
 class CreateCategoryScreen extends StatefulWidget {
   const CreateCategoryScreen({super.key});
@@ -12,26 +16,41 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
   final TextEditingController nameController = TextEditingController();
   bool isFeatured = false;
   String? imageUrl;
+  bool _loading = false;
 
-  void _pickImage() async {
-    // TODO: picker + upload ảnh -> setState imageUrl
-    // Bạn có thể dùng image_picker + upload lên Firebase Storage ở đây
+  Future<void> _pickImage() async {
+    setState(() => _loading = true);
+    final url = await uploadImageToCloudinary();
+    if (url != null) {
+      setState(() => imageUrl = url);
+    }
+    setState(() => _loading = false);
   }
 
-  void _submit() {
+  void _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    // TODO: Lưu dữ liệu lên Firestore
-    /*
-    CategoryModel(
-      id: '', // Firestore tự sinh
-      name: nameController.text,
-      image: imageUrl ?? '',
+    if (imageUrl == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Vui lòng chọn ảnh")));
+      return;
+    }
+    setState(() => _loading = true);
+    final category = CategoryModel(
+      id: '', // sẽ cập nhật sau khi add
+      name: nameController.text.trim(),
+      image: imageUrl!,
       isFeatured: isFeatured,
-      parentId: '', // nếu là sub, truyền id cha
+      parentId: '',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
-    )
-    */
+    );
+    try {
+      await CategoryController.to.addCategory(category);
+      if (mounted) Navigator.pop(context, true);
+    } catch (e) {
+      // Có thể show lỗi nếu muốn
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
@@ -113,49 +132,71 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Image picker
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF7F8FB),
-                          border: Border.all(color: Colors.grey[300]!),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        alignment: Alignment.center,
-                        child: imageUrl == null
-                            ? const Icon(Icons.image_outlined, color: Color(0xFF23235B), size: 54)
-                            : ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
-                          child: Image.network(imageUrl!, width: 120, height: 120, fit: BoxFit.cover),
-                        ),
-                      ),
-                      Positioned(
-                        right: -8,
-                        bottom: -8,
-                        child: GestureDetector(
-                          onTap: _pickImage,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xFF4F6AF6),
-                            ),
-                            padding: const EdgeInsets.all(8),
-                            child: const Icon(Icons.edit, color: Colors.white, size: 20),
+                  // Image picker (dùng Cloudinary)
+                  Card(
+                    elevation: 0,
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: const [
+                              Icon(Icons.image_outlined, size: 22, color: Color(0xFF4F6AF6)),
+                              SizedBox(width: 8),
+                              Text("Category Thumbnail", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            ],
                           ),
-                        ),
+                          const SizedBox(height: 18),
+                          GestureDetector(
+                            onTap: _loading ? null : () => _pickImage(),
+                            child: Container(
+                              height: 160,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF7F8FB),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: const Color(0xFFD3D3D3)),
+                              ),
+                              child: imageUrl == null || imageUrl!.isEmpty
+                                  ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.cloud_upload_outlined, size: 48, color: Color(0xFF4F6AF6)),
+                                  const SizedBox(height: 12),
+                                  OutlinedButton(
+                                    onPressed: _loading ? null : () => _pickImage(),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF4F6AF6),
+                                      side: const BorderSide(color: Color(0xFF4F6AF6)),
+                                    ),
+                                    child: const Text("Add Thumbnail"),
+                                  ),
+                                ],
+                              )
+                                  : ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.network(imageUrl!, fit: BoxFit.cover, width: double.infinity, height: 160),
+                              ),
+                            ),
+                          ),
+                          if (_loading)
+                            const Padding(
+                              padding: EdgeInsets.only(top: 8.0),
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 32),
 
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _submit,
+                      onPressed: _loading ? null : _submit,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4F6AF6),
                         foregroundColor: Colors.white,
@@ -163,12 +204,15 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         textStyle: const TextStyle(fontSize: 17),
                       ),
-                      child: const Text("Create"),
+                      child: _loading
+                          ? const SizedBox(
+                        width: 24, height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                          : const Text("Create"),
                     ),
                   ),
                   const SizedBox(height: 20),
-
-
                 ],
               ),
             ),

@@ -8,6 +8,8 @@ import 'widgets/product_basic_info_form.dart';
 import 'widgets/product_thumbnail_picker.dart';
 import 'widgets/product_images_picker.dart';
 import 'widgets/size_variations_table.dart';
+import '../../../models/product_attribute_model.dart';
+import '../../../models/product_variation_model.dart';
 
 class CreateProductScreen extends StatefulWidget {
   const CreateProductScreen({super.key});
@@ -36,6 +38,14 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
     final mainVariation = sizeVariations.isNotEmpty ? sizeVariations.first : null;
 
+    final productVariations = sizeVariations.map((v) => ProductVariationModel(
+      id: '', // Firestore will generate or you can use a uuid
+      size: v.size,
+      price: (v.price ?? 0).toDouble(),
+      salePrice: (v.salePrice ?? 0).toDouble(),
+      stock: v.stock ?? 0,
+    )).toList();
+
     final product = ProductModel(
       id: '',
       title: titleController.text.trim(),
@@ -47,7 +57,17 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       salePrice: (mainVariation?.salePrice ?? 0).toDouble(),
       stock: mainVariation?.stock ?? 0,
       productType: 'variable',
+      productAttributes: [
+        ProductAttributeModel(
+          name: "Size",
+          values: ["15", "17", "19"],
+        ),
+      ],
+      productVariations: productVariations,
+      isFeatured: true,
     );
+
+
 
     try {
       await ProductController.to.addProduct(product);

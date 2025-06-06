@@ -30,5 +30,12 @@ class CategoryRepository extends GetxController {
     catch (e){
       throw 'Something went wrong. Please try again';
     }
+
+  }
+
+  Future<void> addCategory(CategoryModel category) async {
+    final docRef = await _db.collection("Categories").add(category.toMap());
+    // Cập nhật lại id cho document vừa tạo
+    await _db.collection("Categories").doc(docRef.id).update({'Id': docRef.id});
   }
 }

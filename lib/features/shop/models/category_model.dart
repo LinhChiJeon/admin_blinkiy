@@ -57,5 +57,33 @@ class CategoryModel {
       return CategoryModel.empty();
     }
   }
+  Map<String, dynamic> toMap() {
+    return {
+      'Id': id,
+      'Name': name,
+      'Image': image,
+      'IsFeatured': isFeatured,
+      'ParentId': parentId,
+      'CreatedAt': createdAt,
+      'UpdatedAt': updatedAt,
+    };
+  }
+
+  static CategoryModel fromDoc(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data();
+    return CategoryModel(
+      id: data['Id'] ?? doc.id,
+      name: data['Name'] ?? '',
+      image: data['Image'] ?? '',
+      isFeatured: data['IsFeatured'] ?? false,
+      parentId: data['ParentId'] ?? '',
+      createdAt: (data['CreatedAt'] is Timestamp)
+          ? (data['CreatedAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      updatedAt: (data['UpdatedAt'] is Timestamp)
+          ? (data['UpdatedAt'] as Timestamp).toDate()
+          : DateTime.now(),
+    );
+  }
 
 }
