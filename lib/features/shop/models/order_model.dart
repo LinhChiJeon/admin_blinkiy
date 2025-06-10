@@ -44,9 +44,6 @@ class OrderModel {
     items: [],
   );
 
-
-
-
   Map<String, dynamic> toJson() {
     return {
       'Id': id,
