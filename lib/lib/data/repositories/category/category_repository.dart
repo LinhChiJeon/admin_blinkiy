@@ -38,4 +38,21 @@ class CategoryRepository extends GetxController {
     // Cập nhật lại id cho document vừa tạo
     await _db.collection("Categories").doc(docRef.id).update({'Id': docRef.id});
   }
+
+  Future<void> updateCategory(String categoryId, CategoryModel category) async {
+    try {
+      await _db.collection("Categories").doc(categoryId).update(category.toMap());
+    } catch (e) {
+      throw 'Failed to update category: $e';
+    }
+  }
+
+  // lib/lib/data/repositories/category/category_repository.dart
+  Future<void> deleteCategory(String categoryId) async {
+    try {
+      await _db.collection("Categories").doc(categoryId).delete();
+    } catch (e) {
+      throw 'Failed to delete category: $e';
+    }
+  }
 }
