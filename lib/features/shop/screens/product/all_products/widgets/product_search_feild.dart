@@ -9,7 +9,7 @@ class ProductSearchField extends StatelessWidget {
     return TextField(
       onChanged: onChanged,
       decoration: InputDecoration(
-        hintText: "Search product name, brand, ID...",
+        hintText: "Search product name, ID...",
         prefixIcon: const Icon(Icons.search),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         fillColor: Colors.white,

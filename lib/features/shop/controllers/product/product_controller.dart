@@ -57,4 +57,18 @@ class ProductController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  // lib/features/shop/controllers/product/product_controller.dart
+  Future<void> updateProduct(String productId, ProductModel product) async {
+    try {
+      isLoading.value = true;
+      await _productRepository.updateProduct(productId, product);
+      await fetchData();
+    } catch (e) {
+      // Handle error
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
 }

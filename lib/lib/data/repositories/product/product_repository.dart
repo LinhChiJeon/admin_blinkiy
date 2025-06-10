@@ -29,4 +29,13 @@ class ProductRepository extends GetxController {
     await FirebaseFirestore.instance.collection('Products').doc(productId).delete();
   }
 
+  // lib/lib/data/repositories/product/product_repository.dart
+  Future<void> updateProduct(String productId, ProductModel product) async {
+    try {
+      await _db.collection("Products").doc(productId).update(product.toJson());
+    } catch (e) {
+      throw 'Failed to update product: $e';
+    }
+  }
+
 }
