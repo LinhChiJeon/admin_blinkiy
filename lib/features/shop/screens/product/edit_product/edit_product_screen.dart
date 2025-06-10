@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../../utils/constants/colors.dart';
 import '../../../controllers/category/category_controller.dart';
 import '../../../controllers/product/product_controller.dart';
 import '../../../models/product_model.dart';
@@ -214,7 +215,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       ElevatedButton(
                         onPressed: isSaving ? null : _save,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF4F6AF6),
+                          backgroundColor: TColors.primary,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                         ),

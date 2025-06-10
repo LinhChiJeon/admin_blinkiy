@@ -74,7 +74,7 @@ class OrderListScreen extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             'Total: ${TFormatter.formatCurrency(order.totalAmount)}',
-                            style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.indigo),
+                            style: const TextStyle(fontWeight: FontWeight.w500, color: TColors.primary),
                           ),
                           const SizedBox(height: 4),
                           Row(
