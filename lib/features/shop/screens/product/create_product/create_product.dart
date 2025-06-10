@@ -18,6 +18,27 @@ class CreateProductScreen extends StatefulWidget {
   State<CreateProductScreen> createState() => _CreateProductScreenState();
 }
 
+// Add this function at the top of create_product.dart, after imports
+
+String slugify(String input) {
+  final vietnamese = 'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ'
+      'ÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ';
+  final without = 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd'
+      'AAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYD';
+
+  String result = input;
+  for (int i = 0; i < vietnamese.length; i++) {
+    result = result.replaceAll(vietnamese[i], without[i]);
+  }
+  result = result
+      .toLowerCase()
+      .replaceAll(RegExp(r'[^a-z0-9\s-]'), '')
+      .replaceAll(RegExp(r'\s+'), '-')
+      .replaceAll(RegExp(r'-+'), '-')
+      .replaceAll(RegExp(r'^-+|-+$'), '');
+  return result;
+}
+
 class _CreateProductScreenState extends State<CreateProductScreen> {
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
@@ -65,6 +86,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       ],
       productVariations: productVariations,
       isFeatured: true,
+      slug: slugify(titleController.text.trim()),
     );
 
 
