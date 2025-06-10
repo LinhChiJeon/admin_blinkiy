@@ -17,6 +17,7 @@ class ProductModel {
   String? categoryId;
   List<String>? images;
   String? productType;
+  String? slug;
   List<ProductAttributeModel>? productAttributes;
   List<ProductVariationModel>? productVariations;
 
@@ -32,6 +33,7 @@ class ProductModel {
     this.categoryId,
     this.images,
     this.productType,
+    this.slug,
     this.productAttributes,
     this.productVariations
   });
@@ -52,6 +54,7 @@ class ProductModel {
       // 'Brand': brand!.toJson(),
       'Description': description,
       'ProductType': productType,
+      'Slug': slug,
       'ProductAttributes': productAttributes != null ? productAttributes!.map((e) => e.toJson()).toList():[],
       'ProductVariations': productVariations != null ? productVariations!.map((e) => e.toJson()).toList():[],
     };
@@ -74,6 +77,7 @@ class ProductModel {
       productType: data['ProductType'] ?? '',
       // brand: BrandModel.fromJson(data['Brand),
       images: data['Images'] != null ? List<String>.from(data['Images']):[],
+      slug: data['Slug'] ?? '',
       productAttributes: (data['ProductAttributes'] as List<dynamic>).map((e) => ProductAttributeModel.fromJson(e)).toList(),
       productVariations: (data['ProductVariations'] as List<dynamic>).map((e) => ProductVariationModel.fromJson(e)).toList(),
     ); // ProductModel
