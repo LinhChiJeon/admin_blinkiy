@@ -39,7 +39,11 @@ class ProductTable extends StatelessWidget {
               ),
             ),
             title: Text(product.title, maxLines: 2, overflow: TextOverflow.ellipsis),
-            subtitle: Text('Stock: ${product.stock}  |  \$${product.price}', style: const TextStyle(fontSize: 12)),
+            //subtitle: Text('Stock: $product.stock}  |  \$${product.price}', style: const TextStyle(fontSize: 12)),
+            subtitle: Text(
+              'Stock: ${(product.productVariations != null && product.productVariations!.isNotEmpty) ? product.productVariations!.fold(0, (sum, v) => sum + (v.stock ?? 0)) : product.stock}  |  \$${product.price}',
+              style: const TextStyle(fontSize: 12),
+            ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

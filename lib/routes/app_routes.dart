@@ -53,8 +53,5 @@ class appRoute {
       name: '/orders',
       page: () => const OrderListScreen(),
     ),
-
-
-
   ];
 }

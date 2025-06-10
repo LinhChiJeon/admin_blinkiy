@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../controllers/product/product_controller.dart';
+import '../../edit_product/edit_product_screen.dart';
 import '../table/product_table.dart';
 import '../widgets/add_product_button.dart';
 import '../widgets/product_search_feild.dart';
@@ -43,12 +44,37 @@ class ProductScreenMobile extends StatelessWidget {
             const SizedBox(height: 10),
             Expanded(
               child: ProductTable(
+                // lib/features/shop/screens/product/all_products/table/product_table.dart
                 onEdit: (index) {
-                  // TODO: Edit product
+                  final product = controller.filteredItems[index];
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => EditProductScreen(product: product),
+                    ),
+                  );
                 },
                 onDelete: (index) async {
                   final product = ProductController.to.filteredItems[index];
-                  await ProductController.to.deleteProduct(product.id);
+                  final result = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Confirm Delete'),
+                      content: const Text('Are you sure you want to delete this product?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Confirm'),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (result == true) {
+                    await ProductController.to.deleteProduct(product.id);
+                  }
                 },
               ),
             ),

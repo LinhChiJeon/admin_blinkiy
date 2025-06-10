@@ -4,21 +4,21 @@ import '../../../controllers/category/category_controller.dart';
 import '../../../controllers/product/product_controller.dart';
 import '../../../models/product_model.dart';
 import '../../../models/category_model.dart';
-import 'widgets/product_basic_info_form.dart';
-import 'widgets/product_thumbnail_picker.dart';
-import 'widgets/product_images_picker.dart';
-import 'widgets/size_variations_table.dart';
+import '../create_product/widgets/product_basic_info_form.dart';
+import '../create_product/widgets/product_images_picker.dart';
+import '../create_product/widgets/product_thumbnail_picker.dart';
+import '../create_product/widgets/size_variations_table.dart';
 import '../../../models/product_attribute_model.dart';
 import '../../../models/product_variation_model.dart';
+import '../create_product/widgets/size_variations_table.dart';
 
-class CreateProductScreen extends StatefulWidget {
-  const CreateProductScreen({super.key});
+class EditProductScreen extends StatefulWidget {
+  final ProductModel product;
+  const EditProductScreen({super.key, required this.product});
 
   @override
-  State<CreateProductScreen> createState() => _CreateProductScreenState();
+  State<EditProductScreen> createState() => _EditProductScreenState();
 }
-
-// Add this function at the top of create_product.dart, after imports
 
 String slugify(String input) {
   final vietnamese = 'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ'
@@ -39,25 +39,46 @@ String slugify(String input) {
   return result;
 }
 
-class _CreateProductScreenState extends State<CreateProductScreen> {
+
+class _EditProductScreenState extends State<EditProductScreen> {
   final _formKey = GlobalKey<FormState>();
-  final titleController = TextEditingController();
-  final descController = TextEditingController();
+  late TextEditingController titleController;
+  late TextEditingController descController;
   String? thumbnail;
   List<String> images = [];
   String? selectedCategoryId;
-  List<SizeVariation> sizeVariations = [
-    SizeVariation("15"),
-    SizeVariation("17"),
-    SizeVariation("19"),
-  ];
+  List<SizeVariation> sizeVariations = [];
   bool isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = widget.product;
+    titleController = TextEditingController(text: p.title);
+    descController = TextEditingController(text: p.description ?? '');
+    thumbnail = p.thumbnail;
+    images = List<String>.from(p.images ?? []);
+    selectedCategoryId = p.categoryId;
+    // Convert productVariations to SizeVariation
+    sizeVariations = (p.productVariations ?? []).map((v) => SizeVariation(
+      v.size,
+      price: v.price?.toInt(),
+      salePrice: v.salePrice?.toInt(),
+      stock: v.stock,
+    )).toList();
+    //If no variations, add default sizes
+    if (sizeVariations.isEmpty) {
+      sizeVariations = [
+        SizeVariation("15"),
+        SizeVariation("17"),
+        SizeVariation("19"),
+      ];
+    }
+  }
 
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     setState(() => isSaving = true);
-
-    final mainVariation = sizeVariations.isNotEmpty ? sizeVariations.first : null;
 
     final productVariations = sizeVariations.map((v) => ProductVariationModel(
       id: '', // or keep the original id if needed
@@ -67,8 +88,8 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       stock: (v.stock ?? 0).toInt(),
     )).toList();
 
-    final product = ProductModel(
-      id: '',
+    final updatedProduct = ProductModel(
+      id: widget.product.id,
       title: titleController.text.trim(),
       description: descController.text.trim(),
       thumbnail: thumbnail ?? '',
@@ -80,23 +101,21 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       salePrice: productVariations.isNotEmpty
           ? productVariations.map((v) => v.salePrice).reduce((a, b) => a < b ? a : b)
           : 0.0,
-      stock: productVariations.fold(0, (sum, v) => sum + (v.stock ?? 0)), // Tổng stock các size
+      stock: productVariations.fold(0, (sum, v) => sum + (v.stock ?? 0)),
       productType: 'variable',
       productAttributes: [
         ProductAttributeModel(
           name: "Size",
-          values: ["15", "17", "19"],
+          values: sizeVariations.map((v) => v.size).toList(),
         ),
       ],
       productVariations: productVariations,
-      isFeatured: true,
+      isFeatured: widget.product.isFeatured ?? true,
       slug: slugify(titleController.text.trim()),
     );
 
-
-
     try {
-      await ProductController.to.addProduct(product);
+      await ProductController.to.updateProduct(widget.product.id, updatedProduct);
       if (mounted) Navigator.pop(context);
     } catch (e) {
       // Handle error if needed
@@ -107,12 +126,9 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    // Register CategoryController if not already registered
     if (!Get.isRegistered<CategoryController>()) {
       Get.put(CategoryController());
     }
-
     final categoryController = CategoryController.to;
 
     return Scaffold(
@@ -120,7 +136,7 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Create Product', style: TextStyle(color: Color(0xFF23235B))),
+        title: const Text('Edit Product', style: TextStyle(color: Color(0xFF23235B))),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF23235B)),
           onPressed: () => Navigator.pop(context),
@@ -137,14 +153,9 @@ class _CreateProductScreenState extends State<CreateProductScreen> {
             if (categories.isEmpty) {
               return const Center(child: Text('No categories found'));
             }
-
-
-
-
             if (selectedCategoryId == null && categories.isNotEmpty) {
               selectedCategoryId = categories.first.id;
             }
-
             return Form(
               key: _formKey,
               child: ListView(
