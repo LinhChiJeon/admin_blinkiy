@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../controllers/category/category_controller.dart';
 import '../../create_category/create_category.dart';
 
 class CategoryTableHeader extends StatelessWidget {
@@ -38,8 +39,12 @@ class CategoryTableHeader extends StatelessWidget {
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
             ),
+
             onChanged: (value) {
-              // TODO: filter table
+              final controller = CategoryController.to;
+              controller.filteredItems.value = controller.allItems
+                  .where((c) => c.name.toLowerCase().contains(value.toLowerCase()))
+                  .toList();
             },
           ),
         ),

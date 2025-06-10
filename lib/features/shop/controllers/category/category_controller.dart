@@ -50,4 +50,29 @@ class CategoryController extends GetxController {
       TLoaders.errorSnackBar(title: "Lỗi", message: e.toString());
     }
   }
+
+  Future<void> updateCategory(String categoryId, CategoryModel category) async {
+    try {
+      isLoading.value = true;
+      await _categoryRepository.updateCategory(categoryId, category);
+      await fetchData();
+    } catch (e) {
+      // Handle error
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+
+  Future<void> deleteCategory(String categoryId) async {
+    try {
+      isLoading.value = true;
+      await _categoryRepository.deleteCategory(categoryId);
+      await fetchData();
+    } catch (e) {
+      // Handle error (e.g., show snackbar)
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

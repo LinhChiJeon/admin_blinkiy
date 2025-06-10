@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import '../../../../controllers/category/category_controller.dart';
+import '../../edit_category/edit_category_screen.dart';
 
 
 class CategoryTable extends StatelessWidget {
@@ -27,13 +28,16 @@ class CategoryTable extends StatelessWidget {
         itemBuilder: (context, index) {
           final cat = categories[index];
           return ListTile(
+            // Replace the current leading widget with this:
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 width: 40,
                 height: 40,
                 color: Colors.grey[200],
-                child: const Icon(Icons.category, size: 28, color: Colors.blueGrey),
+                child: cat.image.isNotEmpty
+                    ? Image.network(cat.image, fit: BoxFit.cover)
+                    : const Icon(Icons.category, size: 28, color: Colors.blueGrey),
               ),
             ),
             title: Text(cat.name, maxLines: 2, overflow: TextOverflow.ellipsis),
@@ -59,13 +63,38 @@ class CategoryTable extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.edit, color: Colors.blue),
                   onPressed: () {
-                    // Navigate to edit
+                    final category = controller.filteredItems[index];
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => EditCategoryScreen(category: category),
+                      ),
+                    );
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    // Delete logic
+                  onPressed: () async {
+                    final category = controller.filteredItems[index];
+                    final result = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Confirm Delete'),
+                        content: const Text('Are you sure you want to delete this category?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text('Confirm'),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (result == true) {
+                      await controller.deleteCategory(category.id);
+                    }
                   },
                 ),
               ],
