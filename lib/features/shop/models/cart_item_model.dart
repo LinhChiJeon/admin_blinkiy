@@ -1,16 +1,12 @@
-
+// cart_item_model.dart
 class CartItemModel {
-
   String productId;
   String title;
   double price;
-  String?image;
+  String? image;
   int quantity;
   String variationId;
-  // String? brandName;
-  // Map<String, String>? selectedVariation;
   String? selectedVariation;
-  /// Constructor
 
   CartItemModel({
     required this.productId,
@@ -19,42 +15,34 @@ class CartItemModel {
     this.image,
     this.price = 0.0,
     this.title = '',
-    // this.brandName,
     this.selectedVariation,
   });
 
-  /// Empty Cart
-  static CartItemModel empty() => CartItemModel(productId: '', quantity: 8);
+  static CartItemModel empty() => CartItemModel(productId: '', quantity: 0);
 
-  /// Convert a CartItem to a JSON Map
   Map<String, dynamic> toJson() {
     return {
-      'productId': productId,
-      'title': title,
-      'price': price,
-      'image': image,
-      'quantity': quantity,
-      'variationId': variationId,
-      // 'brandName': brandName,
-      'selectedVariation': selectedVariation,
+      'ProductId': productId,
+      'Title': title,
+      'Price': price,
+      'Image': image,
+      'Quantity': quantity,
+      'VariationId': variationId,
+      'SelectedVariation': selectedVariation,
     };
   }
 
-  /// Create a CartItem from a JSON Map
-
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
     return CartItemModel(
-      productId: json['productId'],
-      title: json['title'],
-      price: json['price']?.toDouble(),
-      image: json['image'],
-      quantity: json['quantity'],
-      variationId: json['variationId'],
-      // brandName: json['brandName'],
-      //selectedVariation: json['selectedVariation'] != null ? Map<String, String>.from(json['selectedVariation']): null,
-      selectedVariation: json['selectedVariation'],
-    ); // CartItemModel
-
+      productId: json['ProductId'] as String? ?? '',
+      title: json['Title'] as String? ?? '',
+      price: (json['Price'] is num)
+          ? (json['Price'] as num).toDouble()
+          : double.tryParse(json['Price']?.toString() ?? '0.0') ?? 0.0,
+      image: json['Image'] as String?,
+      quantity: json['Quantity'] as int? ?? 0,
+      variationId: json['VariationId'] as String? ?? '',
+      selectedVariation: json['SelectedVariation'] as String?,
+    );
   }
-
 }

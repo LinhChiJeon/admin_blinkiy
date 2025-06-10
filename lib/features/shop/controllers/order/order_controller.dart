@@ -29,8 +29,11 @@ class OrderController extends GetxController {
       isLoading.value = true;
       final fetched = await _orderRepository.getAllOrders();
       orders.assignAll(fetched);
-    } catch (e) {
-      // Handle error, e.g., show snackbar
+    } catch (e, stackTrace) {
+      // Add logging to see the actual error in the console
+      print('Error fetching orders: $e');
+      print('Stack trace: $stackTrace');
+      Get.snackbar('Error', 'Failed to load orders. Please try again.');
     } finally {
       isLoading.value = false;
     }
@@ -88,6 +91,19 @@ class OrderController extends GetxController {
       averageOrderValue.value = count > 0 ? total / count : 0.0;
     } catch (e) {
       averageOrderValue.value = 0.0;
+    }
+  }
+
+  Future<void> updateOrderStatus(String orderId, OrderStatus newStatus) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Orders')
+          .doc(orderId)
+          .update({'Status': newStatus.name});
+      await fetchOrders(); // Refresh list
+    } catch (e) {
+      print('Error updating order status: $e');
+      Get.snackbar('Error', 'Failed to update order status.');
     }
   }
 }

@@ -11,7 +11,7 @@ class Routes {
   static const customers = '/customers'; // Có thể thêm tham số sau này
 
   static const orders = '/orders'; // Có thể thêm tham số sau này
-
+  static const orderDetail = '/order-detail'; // Có thể thêm tham số sau này
   static List sidebarMenuItems = [
     // Thêm các màn bạn muốn hiển thị trong sidebar
     {

@@ -1,16 +1,12 @@
+// order_model.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'address_model.dart';
 import 'cart_item_model.dart';
 
-
 enum OrderStatus {
-  pending,
   processing,
-  shipped,
-  delivered,
+  done,
   cancelled,
-  returned,
 }
 
 class OrderModel {
@@ -36,11 +32,10 @@ class OrderModel {
     required this.items,
   });
 
-  /// Empty Order
   static OrderModel empty() => OrderModel(
     id: '',
     userId: '',
-    status: OrderStatus.pending,
+    status: OrderStatus.processing,
     totalAmount: 0.0,
     orderDate: DateTime.now(),
     paymentMethod: '',
@@ -49,7 +44,9 @@ class OrderModel {
     items: [],
   );
 
-  /// Convert Order to JSON for Firestore
+
+
+
   Map<String, dynamic> toJson() {
     return {
       'Id': id,
@@ -64,33 +61,62 @@ class OrderModel {
     };
   }
 
-  /// Create Order from Firestore DocumentSnapshot
   factory OrderModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> doc) {
     if (doc.data() == null) return OrderModel.empty();
     final data = doc.data()!;
+
+    DateTime? parseDate(dynamic dateValue) {
+      if (dateValue == null) return null;
+      if (dateValue is Timestamp) return dateValue.toDate();
+      if (dateValue is String && dateValue.isNotEmpty) return DateTime.tryParse(dateValue);
+      return null;
+    }
+
     return OrderModel(
       id: doc.id,
-      userId: data['UserId'] ?? '',
+      userId: data['UserId'] as String? ?? '',
       status: OrderStatus.values.firstWhere(
-            (e) => e.name == (data['Status'] ?? 'pending'),
-        orElse: () => OrderStatus.pending,
+            (e) => e.name == (data['Status'] as String? ?? ''),
+        orElse: () => OrderStatus.processing,
       ),
-      totalAmount: double.parse((data['TotalAmount'] ?? 0.0).toString()),
-      orderDate: (data['OrderDate'] is Timestamp)
-          ? (data['OrderDate'] as Timestamp).toDate()
-          : DateTime.tryParse(data['OrderDate'] ?? '') ?? DateTime.now(),
-      paymentMethod: data['PaymentMethod'] ?? '',
-      address: data['Address'] != null
+      totalAmount: (data['TotalAmount'] is num)
+          ? (data['TotalAmount'] as num).toDouble()
+          : double.tryParse(data['TotalAmount']?.toString() ?? '0.0') ?? 0.0,
+      orderDate: parseDate(data['OrderDate']) ?? DateTime.now(),
+      deliveryDate: parseDate(data['DeliveryDate']),
+      paymentMethod: data['PaymentMethod'] as String? ?? '',
+      address: data['Address'] is Map
           ? AddressModel.fromMap(Map<String, dynamic>.from(data['Address']))
           : null,
-      deliveryDate: data['DeliveryDate'] != null
-          ? (data['DeliveryDate'] is Timestamp
-          ? (data['DeliveryDate'] as Timestamp).toDate()
-          : DateTime.tryParse(data['DeliveryDate']))
-          : null,
       items: (data['Items'] as List<dynamic>? ?? [])
-          .map((e) => CartItemModel.fromJson(Map<String, dynamic>.from(e)))
+          .whereType<Map<String, dynamic>>()
+          .map((e) => CartItemModel.fromJson(e))
           .toList(),
     );
   }
+
+  OrderModel copyWith({
+    String? id,
+    String? userId,
+    OrderStatus? status,
+    double? totalAmount,
+    DateTime? orderDate,
+    String? paymentMethod,
+    AddressModel? address,
+    DateTime? deliveryDate,
+    List<CartItemModel>? items,
+  }) {
+    return OrderModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      status: status ?? this.status,
+      totalAmount: totalAmount ?? this.totalAmount,
+      orderDate: orderDate ?? this.orderDate,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      address: address ?? this.address,
+      deliveryDate: deliveryDate ?? this.deliveryDate,
+      items: items ?? this.items,
+    );
+  }
+
 }
