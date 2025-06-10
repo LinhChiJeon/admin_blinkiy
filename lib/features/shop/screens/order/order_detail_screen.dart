@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../utils/constants/colors.dart';
 import '../../../../utils/formatters/formatter.dart';
 import '../../controllers/order/order_controller.dart';
 import '../../models/order_model.dart';
@@ -56,7 +57,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(children: const [
-                      Icon(Icons.info_outline, color: Colors.blue),
+                      Icon(Icons.info_outline, color: TColors.primary),
                       SizedBox(width: 8),
                       Text('Order Information', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     ]),
@@ -101,7 +102,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(children: const [
-                      Icon(Icons.list_alt_outlined, color: Colors.blue),
+                      Icon(Icons.list_alt_outlined, color: TColors.primary),
                       SizedBox(width: 8),
                       Text('Order Items', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     ]),
@@ -154,7 +155,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(children: const [
-                      Icon(Icons.sync, color: Colors.blue),
+                      Icon(Icons.sync, color: TColors.primary),
                       SizedBox(width: 8),
                       Text('Update Status', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                     ]),
@@ -173,7 +174,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       decoration: const InputDecoration(
                         labelText: 'Update Status',
                         border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.sync),
+                        prefixIcon: Icon(Icons.sync, color: TColors.primary),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -182,7 +183,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       child: ElevatedButton(
                         onPressed: updateStatus,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: TColors.primary,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         child: const Text('Update'),
@@ -202,7 +203,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.person_outline, color: Colors.blue),
+                    const Icon(Icons.person_outline, color: TColors.primary),
                     const SizedBox(width: 8),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,7 +237,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.home_outlined, color: Colors.blue),
+                    const Icon(Icons.home_outlined, color: TColors.primary),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
