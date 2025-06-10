@@ -46,8 +46,9 @@ class ProductScreenMobile extends StatelessWidget {
                 onEdit: (index) {
                   // TODO: Edit product
                 },
-                onDelete: (index) {
-                  // TODO: Delete product
+                onDelete: (index) async {
+                  final product = ProductController.to.filteredItems[index];
+                  await ProductController.to.deleteProduct(product.id);
                 },
               ),
             ),
