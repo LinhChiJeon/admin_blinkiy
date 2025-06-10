@@ -8,8 +8,20 @@ class OrderRepository {
 
   Future<List<OrderModel>> getAllOrders() async {
     final snapshot = await _db.collection('Orders').get();
-    print('Fetched orders: ${snapshot.docs.length}');
-    return snapshot.docs.map((doc) => OrderModel.fromSnapshot(doc)).toList();
+    print('Fetched documents: ${snapshot.docs.length}');
+
+    final List<OrderModel> orders = [];
+    for (final doc in snapshot.docs) {
+      try {
+        orders.add(OrderModel.fromSnapshot(doc));
+      } catch (e) {
+        // Log the error for the specific document that failed
+        print('Error parsing order with ID: ${doc.id}. Skipping. Error: $e');
+      }
+    }
+
+    print('Successfully parsed orders: ${orders.length}');
+    return orders;
   }
 
   Future<void> createOrder(OrderModel order) async {

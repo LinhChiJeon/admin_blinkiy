@@ -1,5 +1,5 @@
+// address_model.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../../utils/formatters/formatter.dart';
 
 class AddressModel {
@@ -10,7 +10,6 @@ class AddressModel {
   final String ward;
   final String district;
   final String province;
-  // final String country;
   final DateTime? dateTime;
   bool selectedAddress;
 
@@ -22,16 +21,17 @@ class AddressModel {
     required this.ward,
     required this.district,
     required this.province,
-    // required this.country,
     this.dateTime,
     this.selectedAddress = true,
   });
 
   String get formattedPhoneNo => TFormatter.formatPhoneNumber(phoneNumber);
 
-  static AddressModel empty() => AddressModel(id: '', name: '', phoneNumber: '', street: '', ward: '', district: '', province: '');
+  static AddressModel empty() => AddressModel(
+      id: '', name: '', phoneNumber: '', street: '', ward: '', district: '', province: ''
+  );
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'Id': id,
       'Name': name,
@@ -40,47 +40,26 @@ class AddressModel {
       'Ward': ward,
       'District': district,
       'Province': province,
-      'DateTime': DateTime.now(),
+      'DateTime': dateTime,
       'SelectedAddress': selectedAddress,
     };
   }
 
   factory AddressModel.fromMap(Map<String, dynamic> data) {
     return AddressModel(
-      id: data['Id'] as String,
-      name: data['Name'] as String,
-      phoneNumber: data['PhoneNumber'] as String,
-      street: data['Street'] as String,
-      ward: data['Ward'] as String,
-      district: data['District'] as String,
-      province: data['Province'] as String,
-      selectedAddress: data['SelectedAddress'] as bool,
-      dateTime: (data['DateTime'] as Timestamp).toDate(),
-
-    );
-
-  }
-
-  factory AddressModel.fromDocumentSnapshot(DocumentSnapshot snapshot){
-    final data = snapshot.data() as Map<String, dynamic>;
-    return AddressModel(
-      id: snapshot.id,
-      name: data['Name'] ?? '',
-      phoneNumber: data['PhoneNumber'] ?? '',
-      street: data['Street'] ?? '',
-      ward: data['Ward'] ?? '',
-      district: data['District'] ?? '',
-      province: data['Province'] ?? '',
-      selectedAddress: data['SelectedAddress'] as bool,
-      dateTime: (data['DateTime'] as Timestamp).toDate(),
+      id: data['Id'] as String? ?? '',
+      name: data['Name'] as String? ?? '',
+      phoneNumber: data['PhoneNumber'] as String? ?? '',
+      street: data['Street'] as String? ?? '',
+      ward: data['Ward'] as String? ?? '',
+      district: data['District'] as String? ?? '',
+      province: data['Province'] as String? ?? '',
+      selectedAddress: data['SelectedAddress'] as bool? ?? false,
+      dateTime: data['DateTime'] is Timestamp
+          ? (data['DateTime'] as Timestamp).toDate()
+          : (data['DateTime'] is String && data['DateTime'].isNotEmpty
+          ? DateTime.tryParse(data['DateTime'])
+          : null),
     );
   }
-
-  @override
-  String toString(){
-    return '$street, $ward, $district, $province';
-  }
-
-
-
 }

@@ -29,8 +29,11 @@ class OrderController extends GetxController {
       isLoading.value = true;
       final fetched = await _orderRepository.getAllOrders();
       orders.assignAll(fetched);
-    } catch (e) {
-      // Handle error, e.g., show snackbar
+    } catch (e, stackTrace) {
+      // Add logging to see the actual error in the console
+      print('Error fetching orders: $e');
+      print('Stack trace: $stackTrace');
+      Get.snackbar('Error', 'Failed to load orders. Please try again.');
     } finally {
       isLoading.value = false;
     }
