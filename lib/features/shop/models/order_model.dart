@@ -4,12 +4,9 @@ import 'address_model.dart';
 import 'cart_item_model.dart';
 
 enum OrderStatus {
-  pending,
   processing,
-  shipped,
-  delivered,
+  done,
   cancelled,
-  returned,
 }
 
 class OrderModel {
@@ -38,7 +35,7 @@ class OrderModel {
   static OrderModel empty() => OrderModel(
     id: '',
     userId: '',
-    status: OrderStatus.pending,
+    status: OrderStatus.processing,
     totalAmount: 0.0,
     orderDate: DateTime.now(),
     paymentMethod: '',
@@ -77,7 +74,7 @@ class OrderModel {
       userId: data['UserId'] as String? ?? '',
       status: OrderStatus.values.firstWhere(
             (e) => e.name == (data['Status'] as String? ?? ''),
-        orElse: () => OrderStatus.pending,
+        orElse: () => OrderStatus.processing,
       ),
       totalAmount: (data['TotalAmount'] is num)
           ? (data['TotalAmount'] as num).toDouble()
@@ -94,4 +91,29 @@ class OrderModel {
           .toList(),
     );
   }
+
+  OrderModel copyWith({
+    String? id,
+    String? userId,
+    OrderStatus? status,
+    double? totalAmount,
+    DateTime? orderDate,
+    String? paymentMethod,
+    AddressModel? address,
+    DateTime? deliveryDate,
+    List<CartItemModel>? items,
+  }) {
+    return OrderModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      status: status ?? this.status,
+      totalAmount: totalAmount ?? this.totalAmount,
+      orderDate: orderDate ?? this.orderDate,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      address: address ?? this.address,
+      deliveryDate: deliveryDate ?? this.deliveryDate,
+      items: items ?? this.items,
+    );
+  }
+
 }

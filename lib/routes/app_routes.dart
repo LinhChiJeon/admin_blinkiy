@@ -10,8 +10,8 @@ import '../features/shop/screens/category/all_categories/categories.dart';
 import '../features/shop/screens/customer/all_customers/customer.dart';
 import '../features/shop/screens/dashboard/dashboard.dart';
 
+import '../features/shop/screens/order/order_detail_screen.dart';
 import '../features/shop/screens/order/order_list_screen.dart';
-import '../features/shop/screens/order/orders_screen.dart';
 import '../features/shop/screens/product/all_products/products.dart';
 import 'routes.dart';
 
@@ -52,6 +52,11 @@ class appRoute {
     GetPage(
       name: '/orders',
       page: () => const OrderListScreen(),
+    ),
+
+    GetPage(
+      name: '/order-detail',
+      page: () => const OrderDetailScreen(),
     ),
   ];
 }

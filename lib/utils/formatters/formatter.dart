@@ -54,4 +54,5 @@ class TFormatter {
 
     return formattedNumber.toString();
   }
+
 }

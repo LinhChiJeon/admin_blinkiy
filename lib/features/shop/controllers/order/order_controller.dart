@@ -93,4 +93,17 @@ class OrderController extends GetxController {
       averageOrderValue.value = 0.0;
     }
   }
+
+  Future<void> updateOrderStatus(String orderId, OrderStatus newStatus) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Orders')
+          .doc(orderId)
+          .update({'Status': newStatus.name});
+      await fetchOrders(); // Refresh list
+    } catch (e) {
+      print('Error updating order status: $e');
+      Get.snackbar('Error', 'Failed to update order status.');
+    }
+  }
 }

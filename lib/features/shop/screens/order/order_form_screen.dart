@@ -109,7 +109,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
     final order = OrderModel(
       id: '',
       userId: _selectedUserId ?? '',
-      status: OrderStatus.pending,
+      status: OrderStatus.processing,
       totalAmount: totalAmount,
       orderDate: DateTime.now(),
       paymentMethod: _paymentMethodController.text,
