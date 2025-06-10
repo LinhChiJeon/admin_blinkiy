@@ -25,5 +25,8 @@ class ProductRepository extends GetxController {
     }
   }
 
+  Future<void> deleteProduct(String productId) async {
+    await FirebaseFirestore.instance.collection('Products').doc(productId).delete();
+  }
 
 }

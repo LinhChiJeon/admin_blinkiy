@@ -45,4 +45,16 @@ class ProductController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> deleteProduct(String productId) async {
+    try {
+      isLoading.value = true;
+      await _productRepository.deleteProduct(productId);
+      await fetchData(); // Refresh list
+    } catch (e) {
+      // Handle error (snackbar, etc.)
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
