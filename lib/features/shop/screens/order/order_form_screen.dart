@@ -200,11 +200,29 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
               }),
               const SizedBox(height: 16),
               const Text('Payment', style: TextStyle(fontWeight: FontWeight.bold)),
-              TextFormField(
-                controller: _paymentMethodController,
+              DropdownButtonFormField<String>(
+                value: _paymentMethodController.text.isNotEmpty
+                    ? _paymentMethodController.text
+                    : null, // Default to null if no value is set
                 decoration: const InputDecoration(labelText: 'Payment Method'),
+                items: const [
+                  DropdownMenuItem(
+                    value: 'COD',
+                    child: Text('Cash on Delivery (COD)'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'BankTransfer',
+                    child: Text('Bank Transfer'),
+                  ),
+                ],
+                onChanged: (val) {
+                  setState(() {
+                    _paymentMethodController.text = val ?? ''; // Update the payment method
+                  });
+                },
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
+
               const SizedBox(height: 16),
               const Text('Address', style: TextStyle(fontWeight: FontWeight.bold)),
               TextFormField(
