@@ -131,8 +131,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                                 Text(item.title, style: const TextStyle(fontWeight: FontWeight.bold)),
                                 Text('Price: \ ${TFormatter.formatCurrency(item.price)}'),
                                 Text('Quantity: ${item.quantity}'),
-                                if (item.selectedVariation != null)
-                                  Text('Variation: ${item.selectedVariation}'),
+                                if (item.size != null)
+                                  Text('Variation: ${item.size}'),
                               ],
                             ),
                           ),

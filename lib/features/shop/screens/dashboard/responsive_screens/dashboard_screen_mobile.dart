@@ -68,7 +68,7 @@ class DashboardScreenMobile extends StatelessWidget {
                     compareText: "Compared to 2024",
                   ),
                   const SizedBox(height: 14),
-                  const DashboardChartCard(),
+                  const DashboardChartCard(), // Biểu đồ doanh thu hàng tuần
                   const SizedBox(height: 24),
                 ],
               ),

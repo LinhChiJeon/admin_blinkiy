@@ -43,7 +43,8 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
   final _addressProvinceController = TextEditingController();
 
   bool _isSubmitting = false;
-  final Map<String, int> _selectedProducts = {};
+  // Map of productId to {quantity, size}
+  final Map<String, Map<String, dynamic>> _selectedProducts = {};
 
   // User dropdown state
   List<UserModel> _users = [];
@@ -95,12 +96,16 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
 
     final items = _selectedProducts.entries.map((entry) {
       final product = _productController.allItems.firstWhere((p) => p.id == entry.key);
+      final variation = product.productVariations!.firstWhere(
+            (v) => v.size == entry.value['size'],
+      );
       return CartItemModel(
         productId: product.id,
         title: product.title,
-        price: product.price,
-        quantity: entry.value,
+        price: variation.salePrice > 0 ? variation.salePrice : variation.price,
+        quantity: entry.value['quantity'],
         image: product.thumbnail,
+        size: entry.value['size'], // Include size in CartItemModel
       );
     }).toList();
 
@@ -156,41 +161,75 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 }
                 return Column(
                   children: _productController.allItems.map((product) {
-                    return Row(
+                    final hasVariations = product.productVariations != null &&
+                        product.productVariations!.isNotEmpty;
+                    return Column(
                       children: [
-                        Checkbox(
-                          value: _selectedProducts.containsKey(product.id),
-                          onChanged: (selected) {
-                            setState(() {
-                              if (selected == true) {
-                                _selectedProducts[product.id] = 1;
-                              } else {
-                                _selectedProducts.remove(product.id);
-                              }
-                            });
-                          },
-                        ),
-                        Expanded(child: Text(product.title)),
-                        if (_selectedProducts.containsKey(product.id))
-                          SizedBox(
-                            width: 60,
-                            child: TextFormField(
-                              initialValue: _selectedProducts[product.id].toString(),
-                              decoration: const InputDecoration(labelText: 'Qty'),
-                              keyboardType: TextInputType.number,
-                              onChanged: (val) {
-                                final qty = int.tryParse(val) ?? 1;
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _selectedProducts.containsKey(product.id),
+                              onChanged: (selected) {
                                 setState(() {
-                                  _selectedProducts[product.id] = qty;
+                                  if (selected == true) {
+                                    _selectedProducts[product.id] = {
+                                      'quantity': 1,
+                                      'size': hasVariations ? product.productVariations!.first.size : '',
+                                    };
+                                  } else {
+                                    _selectedProducts.remove(product.id);
+                                  }
                                 });
                               },
-                              validator: (val) {
-                                if (_selectedProducts.containsKey(product.id) &&
-                                    (int.tryParse(val ?? '') ?? 0) < 1) {
-                                  return 'Min 1';
-                                }
-                                return null;
-                              },
+                            ),
+                            Expanded(child: Text(product.title)),
+                          ],
+                        ),
+                        if (_selectedProducts.containsKey(product.id))
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    initialValue: _selectedProducts[product.id]!['quantity'].toString(),
+                                    decoration: const InputDecoration(labelText: 'Qty'),
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (val) {
+                                      final qty = int.tryParse(val) ?? 1;
+                                      setState(() {
+                                        _selectedProducts[product.id]!['quantity'] = qty;
+                                      });
+                                    },
+                                    validator: (val) {
+                                      if (_selectedProducts.containsKey(product.id) &&
+                                          (int.tryParse(val ?? '') ?? 0) < 1) {
+                                        return 'Min 1';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 16), // Add spacing between Qty and Size
+                                Expanded(
+                                  child: DropdownButtonFormField<String>(
+                                    value: _selectedProducts[product.id]!['size'],
+                                    decoration: const InputDecoration(labelText: 'Size'),
+                                    items: product.productVariations!
+                                        .map((variation) => DropdownMenuItem(
+                                      value: variation.size,
+                                      child: Text(variation.size),
+                                    ))
+                                        .toList(),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _selectedProducts[product.id]!['size'] = val ?? '';
+                                      });
+                                    },
+                                    validator: (v) => v == null || v.isEmpty ? 'Select a size' : null,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                       ],
@@ -203,7 +242,7 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
               DropdownButtonFormField<String>(
                 value: _paymentMethodController.text.isNotEmpty
                     ? _paymentMethodController.text
-                    : null, // Default to null if no value is set
+                    : null,
                 decoration: const InputDecoration(labelText: 'Payment Method'),
                 items: const [
                   DropdownMenuItem(
@@ -217,12 +256,11 @@ class _OrderFormScreenState extends State<OrderFormScreen> {
                 ],
                 onChanged: (val) {
                   setState(() {
-                    _paymentMethodController.text = val ?? ''; // Update the payment method
+                    _paymentMethodController.text = val ?? '';
                   });
                 },
                 validator: (v) => v == null || v.isEmpty ? 'Required' : null,
               ),
-
               const SizedBox(height: 16),
               const Text('Address', style: TextStyle(fontWeight: FontWeight.bold)),
               TextFormField(

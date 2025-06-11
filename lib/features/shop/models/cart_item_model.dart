@@ -1,4 +1,3 @@
-// cart_item_model.dart
 class CartItemModel {
   String productId;
   String title;
@@ -6,7 +5,7 @@ class CartItemModel {
   String? image;
   int quantity;
   String variationId;
-  String? selectedVariation;
+  String? size; // Renamed from selectedVariation for clarity
 
   CartItemModel({
     required this.productId,
@@ -15,7 +14,7 @@ class CartItemModel {
     this.image,
     this.price = 0.0,
     this.title = '',
-    this.selectedVariation,
+    this.size,
   });
 
   static CartItemModel empty() => CartItemModel(productId: '', quantity: 0);
@@ -28,7 +27,7 @@ class CartItemModel {
       'Image': image,
       'Quantity': quantity,
       'VariationId': variationId,
-      'SelectedVariation': selectedVariation,
+      'Size': size, // Updated key to match renamed field
     };
   }
 
@@ -42,7 +41,7 @@ class CartItemModel {
       image: json['Image'] as String?,
       quantity: json['Quantity'] as int? ?? 0,
       variationId: json['VariationId'] as String? ?? '',
-      selectedVariation: json['SelectedVariation'] as String?,
+      size: json['Size'] as String?, // Updated key to match renamed field
     );
   }
 }
