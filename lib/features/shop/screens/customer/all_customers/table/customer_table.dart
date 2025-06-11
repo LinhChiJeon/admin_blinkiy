@@ -1,8 +1,7 @@
-// In lib/features/shop/screens/customer/all_customers/table/customer_table.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../../lib/features/authentication/controllers/user_controller.dart';
+import '../../../../../../utils/constants/colors.dart';
 import '../../../../models/user_model.dart';
 
 class CustomerTable extends StatelessWidget {
@@ -20,57 +19,124 @@ class CustomerTable extends StatelessWidget {
         return const Center(child: Text('No customers found.'));
       }
       return ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
         itemCount: customers.length,
-        separatorBuilder: (_, __) => const Divider(height: 0, thickness: 0.5, color: Color(0xFFEEEEEE)),
+        separatorBuilder: (_, __) => const SizedBox(height: 14),
         itemBuilder: (context, index) {
           final user = customers[index];
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(22),
-                  child: Image.network(
-                    user.profilePicture,
-                    width: 44,
-                    height: 44,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      width: 44,
-                      height: 44,
-                      color: Colors.grey[300],
+          return Card(
+            elevation: 2.5,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+              child: Row(
+                children: [
+                  // Avatar
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(32),
+                    child: user.profilePicture.isNotEmpty
+                        ? Image.network(
+                      user.profilePicture,
+                      width: 54,
+                      height: 54,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 54,
+                        height: 54,
+                        color: Colors.grey[300],
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.person, color: TColors.primary, size: 32),
+                      ),
+                    )
+                        : Container(
+                      width: 54,
+                      height: 54,
+                      color: Colors.pink.shade100,
                       alignment: Alignment.center,
-                      child: const Icon(Icons.person, color: Colors.white, size: 28),
+                      child: Icon(Icons.person, color: TColors.primary, size: 32),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(width: 18),
+                  // Thông tin khách hàng
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.fullName,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17, letterSpacing: 0.1),
+                        ),
+                        const SizedBox(height: 3),
+                        Row(
+                          children: [
+                            Icon(Icons.email, size: 15, color: Colors.grey.shade400),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: Text(
+                                user.email,
+                                style: const TextStyle(fontSize: 13, color: Colors.grey),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            Icon(Icons.phone, size: 15, color: Colors.grey.shade400),
+                            const SizedBox(width: 5),
+                            Text(
+                              user.formattedPhoneNo,
+                              style: const TextStyle(fontSize: 13, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Nút edit/xóa
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(user.fullName, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-                      Text(user.email, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-                      Text(user.formattedPhoneNo, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                      IconButton(
+                        icon: const Icon(Icons.edit_rounded, color: Color(0xFF2979FF), size: 28),
+                        tooltip: 'Edit',
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        tooltip: 'Delete',
+                        onPressed: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              title: const Text('Confirm Delete'),
+                              content: const Text('Are you sure you want to delete this customer?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(false),
+                                  child: const Text('Cancel'),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: TColors.primary,
+                                  ),
+                                  onPressed: () => Navigator.of(context).pop(true),
+                                  child: const Text('Confirm'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirm == true && user.id != null) {
+                            await controller.deleteUser(user.id!);
+                          }
+                        },
+                      ),
                     ],
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.blueAccent, size: 22),
-                  onPressed: () {},
-                  tooltip: 'Edit',
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.redAccent, size: 22),
-                  onPressed: () {},
-                  tooltip: 'Delete',
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

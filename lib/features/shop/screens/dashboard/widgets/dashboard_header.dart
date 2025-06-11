@@ -29,30 +29,30 @@ class DashboardHeader extends StatelessWidget {
           //     ),
           //   ],
           // ),
-          const SizedBox(height: 26),
+          // const SizedBox(height: 26),
           // Breadcrumb
-          Row(
-            children: const [
-              Text("Dashboard", style: TextStyle(color: Color(0xFF8F99A8), fontSize: 16)),
-              Text("  /  ", style: TextStyle(color: Color(0xFF8F99A8))),
-              Text("Dashboard", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16)),
-            ],
-          ),
+          // Row(
+          //   children: const [
+          //     // Text("Dashboard", style: TextStyle(color: Color(0xFF8F99A8), fontSize: 16)),
+          //     // Text("  /  ", style: TextStyle(color: Color(0xFF8F99A8))),
+          //     Text("Dashboard", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16)),
+          //   ],
+          // ),
           const SizedBox(height: 18),
           // Title
           Row(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF4563FF),
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(9),
-                child: const Icon(Icons.dashboard, color: Colors.white, size: 24),
-              ),
+              // Container(
+              //   decoration: BoxDecoration(
+              //     color: Color(0xFF4563FF),
+              //     shape: BoxShape.circle,
+              //   ),
+              //   padding: const EdgeInsets.all(9),
+              //   //child: const Icon(Icons.dashboard, color: Colors.white, size: 24),
+              // ),
               const SizedBox(width: 14),
               const Text(
-                "Dashboard Types",
+                "Dashboard",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Color(0xFF232940)),
               ),
             ],

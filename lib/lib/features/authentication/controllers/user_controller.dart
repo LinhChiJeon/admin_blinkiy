@@ -5,7 +5,7 @@ import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import '../../../../utils/popups/loaders.dart';
 import '../../personalization/models/user_model.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class UserController extends GetxController {
   static UserController get instance => Get.find();
   final userRepository = Get.put(UserRepository());
@@ -40,4 +40,15 @@ class UserController extends GetxController {
       return UserModel.empty();
     }
   }
+
+  Future<void> deleteUser(String userId) async {
+    try {
+      await FirebaseFirestore.instance.collection('Users').doc(userId).delete();
+      allUsers.removeWhere((user) => user.id == userId);
+      Get.snackbar('Success', 'User deleted successfully');
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to delete user');
+    }
+  }
+
 }
