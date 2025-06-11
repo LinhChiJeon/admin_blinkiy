@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-// Bạn có thể dùng fl_chart để vẽ bar chart thực tế
-// import 'package:fl_chart/fl_chart.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';  // Import thư viện intl
+
+import '../../../controllers/order/order_controller.dart';
 
 class DashboardChartCard extends StatelessWidget {
   const DashboardChartCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Dữ liệu mẫu
-    final data = [1100, 3803, 980, 2700, 1600, 1300, 2200];
-    final labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    final maxValue = data.reduce((a, b) => a > b ? a : b);
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -39,61 +36,101 @@ class DashboardChartCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          // Bar chart đơn giản (có thể thay bằng fl_chart)
-          SizedBox(
-            height: 160,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: List.generate(data.length, (i) {
-                final barHeight = 140 * data[i] / maxValue;
-                final isMax = data[i] == maxValue;
-                return Expanded(
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        width: 24,
-                        height: barHeight,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF4563FF),
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                      ),
-                      if (isMax)
-                        Positioned(
-                          top: 0,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: Color(0xFFFFF500),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              data[i].toString(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF232940),
-                                  fontSize: 13),
-                            ),
+          Obx(() {
+            final data = OrderController.to.weeklySales;
+            final maxValue = data.reduce((a, b) => a > b ? a : b);
+
+            return Column(
+              children: [
+                // Biểu đồ doanh thu
+                SizedBox(
+                  height: 150, // Tăng chiều cao để có đủ không gian hiển thị doanh thu
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Đảm bảo các cột có khoảng cách đều
+                    children: List.generate(data.length, (i) {
+                      final barHeight = 140 * data[i] / maxValue;
+                      final isMax = data[i] == maxValue;
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            // Khi nhấn vào cột, thay đổi trạng thái để hiển thị/ẩn doanh thu
+                            OrderController.to.toggleShowRevenue(i);
+                          },
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              // Cột biểu đồ
+                              Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 5),
+                                width: 24,
+                                height: barHeight,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF4563FF),
+                                  borderRadius: BorderRadius.circular(7),
+                                ),
+                              ),
+                              // Doanh thu nằm lơ lửng trên đầu cột
+                              Obx(() {
+                                return Positioned(
+                                  top: barHeight / 2 - 20, // Doanh thu sẽ nằm ở giữa thân cột
+                                  child: Visibility(
+                                    visible: OrderController.to.showRevenue[i], // Kiểm tra xem cột có được nhấn không
+                                    child: RotatedBox(
+                                      quarterTurns: 3, // Xoay văn bản 90 độ theo chiều dọc
+                                      child: Text(
+                                        data[i] > 0 ? _formatCurrency(data[i]) : '', // Hiển thị doanh thu với định dạng
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF232940),
+                                          fontSize: 10, // Giảm kích thước chữ
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ],
                           ),
                         ),
-                      Positioned(
-                        bottom: -22,
-                        child: Text(
-                          labels[i],
-                          style: const TextStyle(
-                              fontSize: 13, color: Color(0xFF8F99A8)),
-                        ),
-                      ),
-                    ],
+                      );
+                    }),
                   ),
-                );
-              }),
-            ),
-          ),
+                ),
+                // Các ngày nằm phía dưới biểu đồ
+                SizedBox(
+                  height: 20,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Đảm bảo các ngày cách đều nhau
+                    children: List.generate(data.length, (i) {
+                      return Text(
+                        _getDayLabel(i),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.red,
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            );
+          }),
         ],
       ),
     );
+  }
+
+  // Chuyển đổi chỉ số ngày thành tên ngày trong tuần và định dạng ngày/tháng
+  String _getDayLabel(int index) {
+    DateTime now = DateTime.now();
+    DateTime targetDay = now.subtract(Duration(days: 6 - index));
+    return '${targetDay.day}/${targetDay.month}'; // Định dạng ngày/tháng
+  }
+
+  // Hàm định dạng số thành tiền với dấu phẩy
+  String _formatCurrency(double value) {
+    final format = NumberFormat("#,###", "en_US");  // Định dạng số với dấu phẩy (1,600,000)
+    return format.format(value);
   }
 }

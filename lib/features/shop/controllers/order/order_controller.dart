@@ -14,6 +14,8 @@ class OrderController extends GetxController {
   RxDouble salesTotal = 0.0.obs;
   RxDouble averageOrderValue = 0.0.obs;
   final _orderRepository = OrderRepository();
+  RxList<double> weeklySales = RxList.generate(7, (index) => 0.0);
+  RxList<bool> showRevenue = RxList.generate(7, (index) => false);
 
   @override
   void onInit() {
@@ -29,6 +31,7 @@ class OrderController extends GetxController {
       isLoading.value = true;
       final fetched = await _orderRepository.getAllOrders();
       orders.assignAll(fetched);
+      calculateWeeklySales(); // Tính toán doanh thu hàng tuần
     } catch (e, stackTrace) {
       // Add logging to see the actual error in the console
       print('Error fetching orders: $e');
@@ -106,4 +109,31 @@ class OrderController extends GetxController {
       Get.snackbar('Error', 'Failed to update order status.');
     }
   }
+
+  // Tính toán doanh thu hàng tuần từ các đơn hàng trong 7 ngày gần nhất
+  void calculateWeeklySales() {
+    // Lấy ngày hiện tại
+    DateTime now = DateTime.now();
+
+    // Khởi tạo mảng doanh thu mỗi ngày (7 ngày gần nhất)
+    List<double> sales = List.generate(7, (index) => 0.0);
+
+    // Lặp qua các đơn hàng để tính doanh thu mỗi ngày
+    for (var order in orders) {
+      if (order.orderDate.isAfter(now.subtract(Duration(days: 7)))) {
+        int dayIndex = now.difference(order.orderDate).inDays; // Tính toán khoảng cách ngày
+        if (dayIndex >= 0 && dayIndex < 7) {
+          sales[6 - dayIndex] += order.totalAmount; // Cộng doanh thu cho ngày tương ứng
+        }
+      }
+    }
+
+    weeklySales.assignAll(sales); // Cập nhật doanh thu hàng tuần
+  }
+  // Hàm để thay đổi trạng thái hiển thị doanh thu của cột khi nhấn vào cột
+  void toggleShowRevenue(int index) {
+    showRevenue[index] = !showRevenue[index]; // Thay đổi trạng thái hiển thị doanh thu
+    update(); // Cập nhật giao diện
+  }
 }
+
