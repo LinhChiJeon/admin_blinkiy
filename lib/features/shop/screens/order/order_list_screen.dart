@@ -33,11 +33,11 @@ class OrderListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('All Orders'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushReplacementNamed(context, '/dashboard'),
-          tooltip: 'Back',
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () => Navigator.pushReplacementNamed(context, '/dashboard'),
+        //   tooltip: 'Back',
+        // ),
       ),
       body: Obx(() {
         if (orderController.isLoading.value) {

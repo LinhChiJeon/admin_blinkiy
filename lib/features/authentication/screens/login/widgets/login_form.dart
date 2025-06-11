@@ -31,7 +31,6 @@ class LoginForm extends StatelessWidget {
               validator: TValidator.validateEmail,
               decoration: InputDecoration(
                 labelText: TTexts.email,
-                // prefixIcon: const Icon(TIcons.direct_right),
               ),
             ),
             const SizedBox(height: TSizes.spaceBtwInputFields),
@@ -58,8 +57,6 @@ class LoginForm extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // You can add Remember Me Checkbox here if needed
-                // TextButton(onPressed: () {}, child: Text('Remember Me')),
                 /// Remember Me
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -82,17 +79,7 @@ class LoginForm extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-
-                // onPressed: () {
-                //   // TODO: Thêm xác thực đăng nhập ở đây nếu cần
-                //   Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(builder: (_) => const DashboardScreen()),
-                //   );
-                // },
                 onPressed: () => controller.emailAndPasswordSignIn(),
-
-               
                 child: const Text(TTexts.signIn),
               ),
             ),

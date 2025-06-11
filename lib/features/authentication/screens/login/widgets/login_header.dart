@@ -22,10 +22,6 @@ class LoginHeader extends StatelessWidget {
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(height: TSizes.sm),
-          Text(
-            TTexts.loginSubTitle,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
         ],
       ),
     );

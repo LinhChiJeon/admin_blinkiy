@@ -22,7 +22,6 @@ class CategoryTableHeader extends StatelessWidget {
             textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
           onPressed: () {
-            // TODO: Chuyển sang màn tạo mới category
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const CreateCategoryScreen()),
             );

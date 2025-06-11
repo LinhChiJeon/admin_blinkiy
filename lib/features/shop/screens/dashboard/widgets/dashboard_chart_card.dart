@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';  // Import thư viện intl
 
+import '../../../../../utils/constants/colors.dart';
 import '../../../controllers/order/order_controller.dart';
 
 class DashboardChartCard extends StatelessWidget {
@@ -66,7 +67,7 @@ class DashboardChartCard extends StatelessWidget {
                                 width: 24,
                                 height: barHeight,
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF4563FF),
+                                  color: TColors.primary,
                                   borderRadius: BorderRadius.circular(7),
                                 ),
                               ),
@@ -106,6 +107,7 @@ class DashboardChartCard extends StatelessWidget {
                       return Text(
                         _getDayLabel(i),
                         style: const TextStyle(
+                          fontWeight: FontWeight.w600,
                           fontSize: 13,
                           color: Colors.red,
                         ),
