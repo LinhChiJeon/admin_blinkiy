@@ -11,6 +11,7 @@ class ProductTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = ProductController.to;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Obx(() {
       if (controller.isLoading.value) {
@@ -21,9 +22,12 @@ class ProductTable extends StatelessWidget {
         return const Center(child: Text('No products found.'));
       }
       return ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+        padding: EdgeInsets.symmetric(
+          vertical: screenWidth * 0.04,
+          horizontal: screenWidth * 0.025,
+        ),
         itemCount: products.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, __) => SizedBox(height: screenWidth * 0.03),
         itemBuilder: (context, index) {
           final product = products[index];
           final totalStock = (product.productVariations != null && product.productVariations!.isNotEmpty)
@@ -38,38 +42,41 @@ class ProductTable extends StatelessWidget {
                 // View details
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                padding: EdgeInsets.symmetric(
+                  vertical: screenWidth * 0.03,
+                  horizontal: screenWidth * 0.025,
+                ),
                 child: Row(
                   children: [
                     // Ảnh sản phẩm
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.04),
                       child: Container(
-                        width: 56,
-                        height: 56,
+                        width: screenWidth * 0.14,
+                        height: screenWidth * 0.14,
                         color: Colors.grey[100],
                         child: product.thumbnail.isNotEmpty
                             ? Image.network(product.thumbnail, fit: BoxFit.cover)
-                            : Icon(Icons.shopping_bag, size: 32, color: Colors.blue.shade400),
+                            : Icon(Icons.shopping_bag, size: screenWidth * 0.08, color: Colors.blue.shade400),
                       ),
                     ),
-                    const SizedBox(width: 18),
-                    // Thông tin sản phẩm
+                    SizedBox(width: screenWidth * 0.035),
+                    // Thông tin sản phẩm (co giãn)
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             product.title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 17,
+                              fontSize: screenWidth * 0.045,
                               letterSpacing: 0.1,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: screenWidth * 0.012),
                           Row(
                             children: [
                               Container(
@@ -77,18 +84,24 @@ class ProductTable extends StatelessWidget {
                                   color: Colors.teal.withOpacity(0.07),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                margin: const EdgeInsets.only(right: 10),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: screenWidth * 0.018,
+                                  vertical: screenWidth * 0.005,
+                                ),
+                                margin: EdgeInsets.only(right: screenWidth * 0.018),
                                 child: Text(
                                   'Stock: $totalStock',
-                                  style: const TextStyle(fontSize: 12, color: Colors.teal),
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.03,
+                                    color: Colors.teal,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: screenWidth * 0.02),
                               Text(
                                 '\$${product.price}',
-                                style: const TextStyle(
-                                  fontSize: 13,
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.035,
                                   color: Colors.deepOrange,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -98,21 +111,23 @@ class ProductTable extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // Nút Edit/Xóa
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit_rounded, color: Color(0xFF2979FF)),
-                          tooltip: 'Edit',
-                          onPressed: () => onEdit?.call(index),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          tooltip: 'Delete',
-                          onPressed: () => onDelete?.call(index),
-                        ),
-                      ],
+                    // Nút Edit/Xóa (giữ kích thước nhỏ, không bị tràn)
+                    IntrinsicWidth(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit_rounded, color: const Color(0xFF2979FF), size: screenWidth * 0.07),
+                            tooltip: 'Edit',
+                            onPressed: () => onEdit?.call(index),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red, size: screenWidth * 0.07),
+                            tooltip: 'Delete',
+                            onPressed: () => onDelete?.call(index),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

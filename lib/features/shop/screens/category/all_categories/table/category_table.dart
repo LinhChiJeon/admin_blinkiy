@@ -10,6 +10,7 @@ class CategoryTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = CategoryController.to;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Obx(() {
       if (controller.isLoading.value) {
@@ -20,9 +21,12 @@ class CategoryTable extends StatelessWidget {
         return const Center(child: Text('No categories found.'));
       }
       return ListView.separated(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+        padding: EdgeInsets.symmetric(
+          vertical: screenWidth * 0.04,
+          horizontal: screenWidth * 0.025,
+        ),
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, __) => SizedBox(height: screenWidth * 0.03),
         itemBuilder: (context, index) {
           final cat = categories[index];
           return Card(
@@ -34,22 +38,25 @@ class CategoryTable extends StatelessWidget {
                 // View details
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                padding: EdgeInsets.symmetric(
+                  vertical: screenWidth * 0.03,
+                  horizontal: screenWidth * 0.025,
+                ),
                 child: Row(
                   children: [
                     // Hình và icon
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.03),
                       child: Container(
-                        width: 48,
-                        height: 48,
+                        width: screenWidth * 0.12,
+                        height: screenWidth * 0.12,
                         color: Colors.grey[100],
                         child: cat.image.isNotEmpty
                             ? Image.network(cat.image, fit: BoxFit.cover)
-                            : Icon(Icons.category, size: 32, color: TColors.primary),
+                            : Icon(Icons.category, size: screenWidth * 0.08, color: TColors.primary),
                       ),
                     ),
-                    const SizedBox(width: 18),
+                    SizedBox(width: screenWidth * 0.045),
                     // Thông tin chính
                     Expanded(
                       child: Column(
@@ -57,11 +64,15 @@ class CategoryTable extends StatelessWidget {
                         children: [
                           Text(
                             cat.name,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17, letterSpacing: 0.1),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: screenWidth * 0.042,
+                              letterSpacing: 0.1,
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 6),
+                          SizedBox(height: screenWidth * 0.015),
                           Row(
                             children: [
                               if (cat.parentId.isNotEmpty)
@@ -70,22 +81,31 @@ class CategoryTable extends StatelessWidget {
                                     color: Colors.indigo.withOpacity(0.07),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                  margin: const EdgeInsets.only(right: 10),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.015,
+                                    vertical: screenWidth * 0.005,
+                                  ),
+                                  margin: EdgeInsets.only(right: screenWidth * 0.022),
                                   child: Text(
                                     'Parent: ${cat.parentId}',
-                                    style: const TextStyle(fontSize: 12, color: Colors.indigo),
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.03,
+                                      color: Colors.indigo,
+                                    ),
                                   ),
                                 ),
                               Icon(
                                 cat.isFeatured ? Icons.star_rounded : Icons.star_border_rounded,
                                 color: cat.isFeatured ? Colors.amber : Colors.grey,
-                                size: 18,
+                                size: screenWidth * 0.045,
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: screenWidth * 0.02),
                               Text(
                                 cat.formattedDate,
-                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.03,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ],
                           ),
@@ -97,7 +117,7 @@ class CategoryTable extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.edit_rounded, color: Color(0xFF2979FF)),
+                          icon: Icon(Icons.edit_rounded, color: const Color(0xFF2979FF), size: screenWidth * 0.07),
                           tooltip: 'Edit',
                           onPressed: () {
                             final category = controller.filteredItems[index];
@@ -109,7 +129,7 @@ class CategoryTable extends StatelessWidget {
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
+                          icon: Icon(Icons.delete, color: Colors.red, size: screenWidth * 0.07),
                           tooltip: 'Delete',
                           onPressed: () async {
                             final category = controller.filteredItems[index];
